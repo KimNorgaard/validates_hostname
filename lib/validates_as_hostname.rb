@@ -116,7 +116,7 @@ module PAK
             end
 
             # CHECK 2: hostname label cannot begin or end with hyphen
-            unless label =~ /^[^-].*[^-]$/i
+            if label =~ /^[-]/i or label =~ /[-]$/
               r.errors.add( attr_name,
                 I18n.t(
                   'validates_as_hostname.label_begins_or_ends_with_hyphen',
