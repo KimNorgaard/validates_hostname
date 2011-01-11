@@ -1,0 +1,27 @@
+# Read about fixtures at http://ar.rubyonrails.org/classes/Fixtures.html
+
+one:
+  origin: MyString
+  zone_type_id: 1
+  master: MyString
+  ns: MyString
+  mbox: MyString
+  serial: 1
+  refresh: 1
+  retry: 1
+  expire: 1
+  ttl: 1
+  active: false
+
+two:
+  origin: MyString
+  zone_type_id: 1
+  master: MyString
+  ns: MyString
+  mbox: MyString
+  serial: 1
+  refresh: 1
+  retry: 1
+  expire: 1
+  ttl: 1
+  active: false
