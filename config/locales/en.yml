@@ -2,4 +2,31 @@
 # See http://github.com/svenfuchs/rails-i18n/tree/master/rails%2Flocale for starting points.
 
 en:
-  hello: "Hello world"
+  activerecord:
+    errors:
+      messages:
+        ip: "is not a valid ip address"
+      models:
+        zone:
+          attributes:
+            name:
+              blank: "Zone origin not provided"
+            mname:
+              blank: "Zone primary name server not provided"
+            rname:
+              blank: "Zone mailbox not provided"
+            serial:
+              blank: "Zone serial number not provided"
+            refresh:
+              blank: "Zone refresh value not provided"
+            retry:
+              blank: "Zone retry value not provided"
+            expire:
+              blank: "Zone expire value not provided"
+            minimum:
+              blank: "Zone minimum TTL value not provided"
+            zone_type:
+              blank: "Zone type not provided"
+            master:
+              blank: "Zone master not provided, but zone type is SLAVE"
+              ip: "Zone master is not a valid ip address"

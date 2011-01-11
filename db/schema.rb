@@ -21,21 +21,21 @@ ActiveRecord::Schema.define(:version => 20110111135646) do
   add_index "zone_types", ["name"], :name => "index_zone_types_on_name"
 
   create_table "zones", :force => true do |t|
-    t.string   "origin",                           :null => false
-    t.string   "master",                           :null => false
-    t.string   "ns",                               :null => false
-    t.string   "mbox",                             :null => false
-    t.integer  "serial",       :default => 1,      :null => false
+    t.string   "name",                             :null => false
+    t.string   "master"
+    t.string   "mname",                            :null => false
+    t.string   "rname",                            :null => false
+    t.integer  "serial",                           :null => false
     t.integer  "refresh",      :default => 10800,  :null => false
     t.integer  "retry",        :default => 3600,   :null => false
     t.integer  "expire",       :default => 604800, :null => false
-    t.integer  "ttl",          :default => 3600,   :null => false
+    t.integer  "minimum",      :default => 3600,   :null => false
     t.boolean  "active",       :default => true,   :null => false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "zone_type_id"
+    t.integer  "zone_type_id", :default => 1,      :null => false
   end
 
-  add_index "zones", ["origin"], :name => "index_zones_on_origin"
+  add_index "zones", ["name"], :name => "index_zones_on_name"
 
 end

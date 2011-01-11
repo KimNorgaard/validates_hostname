@@ -1,0 +1,8 @@
+native:
+  name: "NATIVE"
+master:
+  name: "MASTER"
+slave:
+  name: "SLAVE"
+superslave:
+  name: "SUPERSLAVE"
