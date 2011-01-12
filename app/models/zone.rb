@@ -31,4 +31,6 @@ class Zone < ActiveRecord::Base
   validates_numericality_of :minimum,
     :greater_than_or_equal_to => 3600,
     :less_than_or_equal_to    => 10800
+
+  validates :name, :hostname => true, :allow_blank => true
 end

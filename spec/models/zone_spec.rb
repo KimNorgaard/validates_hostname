@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe Zone, "that is new" do
+  include ZoneHelperMethods
   fixtures :zone_types
 
   before(:each) do
@@ -28,7 +29,7 @@ describe Zone, "that is new" do
     zone.should_not be_valid
   end
   
-  it "should not be valid without an name" do
+  it "should not be valid without a name" do
     @valid_attributes[:name] = nil
     zone = Zone.new(@valid_attributes)
     zone.should_not be_valid
@@ -80,76 +81,32 @@ describe Zone, "that is new" do
     zone.should be_valid
   end
   
-  it "should not be valid if SOA serial is not an unsigned 32 bit integer" do
-    @valid_attributes[:serial] = -1
+  it "should not be valid if the zone name is not a domain name" do
     zone = Zone.new(@valid_attributes)
+    zone.name = 'invalid'
     zone.should_not be_valid
-    zone.should have(1).errors_on(:serial)
-    zone.serial = 1
-    zone.should be_valid
-    zone.serial = 2**32-1
-    zone.should be_valid
-    zone.serial = 2**32
-    zone.should_not be_valid
-    zone.should have(1).errors_on(:serial)
+    zone.should have(1).errors_on(:name)
+  end
+  
+  it "should not be valid if SOA serial is not an unsigned 32 bit integer" do
+    check_int_on_zone(@valid_attributes, 'serial', [-1, 2**32], [1, 2**32-1])
   end
 
   it "should not be valid if SOA refresh value is not an unsigned 32 bit integer" do
-    @valid_attributes[:refresh] = -(2**31)-1
-    zone = Zone.new(@valid_attributes)
-    zone.should_not be_valid
-    zone.should have(1).errors_on(:refresh)
-    zone.refresh = -(2**31)
-    zone.should be_valid
-    zone.refresh = 2**31-1
-    zone.should be_valid
-    zone.refresh = 2**31
-    zone.should_not be_valid
-    zone.should have(1).errors_on(:refresh)
+    check_int_on_zone(@valid_attributes, 'refresh', [-(2**31)-1, 2**31], [-(2**31), 2**31-1])
   end
 
   it "should not be valid if SOA retry value is not an unsigned 32 bit integer" do
-    @valid_attributes[:retry] = -(2**31)-1
-    zone = Zone.new(@valid_attributes)
-    zone.should_not be_valid
-    zone.should have(1).errors_on(:retry)
-    zone.retry = -(2**31)
-    zone.should be_valid
-    zone.retry = 2**31-1
-    zone.should be_valid
-    zone.retry = 2**31
-    zone.should_not be_valid
-    zone.should have(1).errors_on(:retry)
+    check_int_on_zone(@valid_attributes, 'retry', [-(2**31)-1, 2**31], [-(2**31), 2**31-1])
   end
 
   it "should not be valid if SOA expire value is not an unsigned 32 bit integer" do
-    @valid_attributes[:expire] = -(2**31)-1
-    zone = Zone.new(@valid_attributes)
-    zone.should_not be_valid
-    zone.should have(1).errors_on(:expire)
-    zone.expire = -(2**31)
-    zone.should be_valid
-    zone.expire = 2**31-1
-    zone.should be_valid
-    zone.expire = 2**31
-    zone.should_not be_valid
-    zone.should have(1).errors_on(:expire)
+    check_int_on_zone(@valid_attributes, 'expire', [-(2**31)-1, 2**31], [-(2**31), 2**31-1])
   end
   
   it "should not be valid if SOA minimum TTL is not an unsigned integer between 3600 and 10800" do
-    @valid_attributes[:minimum] = 3599
-    zone = Zone.new(@valid_attributes)
-    zone.should_not be_valid
-    zone.should have(1).errors_on(:minimum)
-    zone.minimum = 3600
-    zone.should be_valid
-    zone.minimum = 10800
-    zone.should be_valid
-    zone.minimum = 10801
-    zone.should_not be_valid
-    zone.should have(1).errors_on(:minimum)
+    check_int_on_zone(@valid_attributes, 'minimum', [3599, 10801], [3600, 7200, 10800])
   end
-
 end
 
 describe Zone, "that exists" do
@@ -163,7 +120,7 @@ describe Zone, "that exists" do
   it "should have three records" do
     Zone.should have(3).records
   end
-  
+
   it "should find an existing zone" do
     zone = Zone.find(zones("test.com".to_sym).id)
     zone.should eql(zones("test.com".to_sym))
