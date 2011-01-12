@@ -1,12 +1,13 @@
 require 'rubygems'
+require 'rake/testtask'
 require 'rake/rdoctask'
 require 'rake/gempackagetask'
 require 'rubygems/specification'
 require 'rspec/core/rake_task'
-require 'lib/validates_hostname/version'
+require './lib/validates_hostname/version'
 
 GEM_NAME = "validates_hostname"
-GEM_VERSION = ValidatesHostname::VERSION
+GEM_VERSION = PAK::ValidatesHostname::VERSION
  
 spec = Gem::Specification.new do |s|
   s.name = GEM_NAME
@@ -17,11 +18,18 @@ spec = Gem::Specification.new do |s|
   s.extra_rdoc_files = ["README.rdoc", "CHANGELOG.rdoc", "MIT-LICENSE"]
   s.summary = %q{Checks for valid hostnames}
   s.description = %q{Extension to ActiveRecord::Base for validating hostnames}
-  s.author = "Kim Nørgaard"
+  s.author = "Kim Norgaard"
   s.email = "jasen@jasen.dk"
   s.homepage = "https://github.com/KimNorgaard/validates_hostname"
   s.require_path = 'lib'
   s.files = %w(validates_hostname.gemspec MIT-LICENSE CHANGELOG.rdoc README.rdoc Rakefile) + Dir.glob("{lib,spec}/**/*")
+end
+
+desc 'Test the validates_as_hostname gem/plugin.'
+Rake::TestTask.new(:test) do |t|
+  t.libs << 'lib'
+  t.pattern = 'test/*_test.rb'
+  t.verbose = true 
 end
 
 desc 'Default: run specs.'
@@ -35,9 +43,9 @@ end
 desc 'Generate documentation for plugin.'
 Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title    = 'ValidatesTimeliness'
+  rdoc.title    = 'ValidatesHostname'
   rdoc.options << '--line-numbers' << '--inline-source'
-  rdoc.rdoc_files.include('README')
+  rdoc.rdoc_files.include('README.rdoc')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 

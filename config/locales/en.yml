@@ -4,8 +4,6 @@
 en:
   activerecord:
     errors:
-      messages:
-        ip: "is not a valid ip address"
       models:
         zone:
           attributes:

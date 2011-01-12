@@ -83,10 +83,32 @@ describe Zone, "that is new" do
   
   it "should not be valid if the zone name is not a domain name" do
     zone = Zone.new(@valid_attributes)
-    zone.name = 'invalid'
+    zone.name = '*invalid*'
+    zone.should_not be_valid
+    zone.should have(2).errors_on(:name)
+    zone.name = '_host.test.com'
     zone.should_not be_valid
     zone.should have(1).errors_on(:name)
   end
+  
+  it "should not be valid if the rname is not a fqdn" do
+    zone = Zone.new(@valid_attributes)
+    zone.rname = 'invalid.toplevel'
+    zone.should_not be_valid
+    zone.should have(1).errors_on(:rname)
+    zone.name = '_host.test.com'
+    zone.should_not be_valid
+    zone.should have(1).errors_on(:name)
+  end
+
+  it "should not be valid if the mname is not a hostname" do
+    zone = Zone.new(@valid_attributes)
+    zone.mname = '*invalid*'
+    zone.should_not be_valid
+    zone.should have(1).errors_on(:mname)
+    zone.mname = '_ns1.test.com'
+    zone.should be_valid
+  end  
   
   it "should not be valid if SOA serial is not an unsigned 32 bit integer" do
     check_int_on_zone(@valid_attributes, 'serial', [-1, 2**32], [1, 2**32-1])

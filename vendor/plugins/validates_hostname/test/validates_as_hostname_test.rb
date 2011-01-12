@@ -2,7 +2,7 @@ require 'rubygems'
 gem 'activerecord'
 require 'active_record'
 require 'test/unit'
-require File.dirname(__FILE__) + '/../lib/validates_as_hostname'
+require File.dirname(__FILE__) + '/../lib/validates_hostname'
 
 ActiveRecord::Base.establish_connection :adapter => 'sqlite3', :database => ':memory:'
 
@@ -171,7 +171,7 @@ class ValidatesAsHostnameTest < Test::Unit::TestCase
   
   def test_shold_not_save_with_invalid_characters
     @record = Record.new
-    %w( ; : * ^ ~ ¨ + ' ! # " % & / ( ) = ? $ \\ ).each do |char|
+    %w( ; : * ^ ~ + ' ! # " % & / ( ) = ? $ \\ ).each do |char|
       testname="#{char}test"
       @record.hostname                       = testname
       @record.hostname_with_underscores      = testname
