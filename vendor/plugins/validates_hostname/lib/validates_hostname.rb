@@ -92,7 +92,7 @@ module PAK
           #          TLD must be valid
           if options[:require_valid_tld] == true
             has_tld = options[:valid_tlds].select {
-              |tld| tld =~ /^#{Regexp.escape(labels.last)}$/i
+              |tld| tld =~ /^#{Regexp.escape(labels.last || '')}$/i
             }.empty? ? false : true
             add_error(record, attribute, :hostname_is_not_fqdn) unless has_tld
           end
@@ -100,7 +100,6 @@ module PAK
       end
       
       def add_error(record, attr_name, message, *interpolators)
-
         args = {
           :default => [DEFAULT_ERROR_MSG[message], options[:message]],
           :scope   => [:errors, :messages]
@@ -133,12 +132,20 @@ module PAK
                 ) ? true : false
               )
               if is_numeric_only and labels.size == 1
-                record.errors.add(attribute, options[:message] || :single_numeric_hostname_label, :default => 'hostnames cannot consist of a single numeric label')
+                add_error(record, attribute, :single_numeric_hostname_label)
               end
             end
           end
         end
       end
+      
+      def add_error(record, attr_name, message, *interpolators)
+        args = {
+          :default => [DEFAULT_ERROR_MSG[message], options[:message]],
+          :scope   => [:errors, :messages]
+        }.merge(interpolators.last.is_a?(Hash) ? interpolators.pop : {})
+        record.errors.add(attr_name, I18n.t( message, args ))
+      end      
     end
 
     class FqdnValidator < HostnameValidator

@@ -1,30 +1,27 @@
 # Add your own tasks in files placed in lib/tasks ending in .rake,
 # for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
 
-require File.expand_path('../config/application', __FILE__)
-require 'rake'
 
+require File.expand_path('../config/application', __FILE__)
 Pak::Application.load_tasks
-=======
 require 'rake'
 require 'rake/testtask'
 require 'rake/rdoctask'
+require 'rspec/core/rake_task'
  
-desc 'Default: run the validates_as_hostname tests'
-task :default => :test
- 
-desc 'Test the validates_as_hostname gem/plugin.'
-Rake::TestTask.new(:test) do |t|
-  t.libs << 'lib'
-  t.pattern = 'test/*_test.rb'
-  t.verbose = true
+desc 'Default: run tests'
+task :default => :spec
+
+desc "Run specs"
+RSpec::Core::RakeTask.new do |t|
+  t.pattern = "./spec/**/*_spec.rb" # don't need this, it's default.
 end
  
-desc 'Generate documentation for the validates_as_hostname gem/plugin.'
+desc 'Generate documentation for PAK.'
 Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_dir = 'rdoc'
-  rdoc.title    = 'validates_as_hostname'
+  rdoc.title    = 'PAK'
   rdoc.options << '--line-numbers' << '--inline-source'
-  rdoc.rdoc_files.include('README.markdown')
+  rdoc.rdoc_files.include('README.rdoc')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
