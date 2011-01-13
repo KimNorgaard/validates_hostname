@@ -1,1 +1,1 @@
-require 'validates_as_hostname'
+require 'validates_hostname'

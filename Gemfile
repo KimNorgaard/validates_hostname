@@ -1,5 +1,6 @@
 source 'http://rubygems.org'
 
+<<<<<<< HEAD
 gem 'rails', '3.0.3'
 
 # Bundle edge Rails instead:
@@ -34,3 +35,11 @@ end
 # group :development, :test do
 #   gem 'webrat'
 # end
+=======
+gemspec
+
+gem 'rails', '3.0.0'
+gem 'rspec', '>= 2.0.0.beta.17'
+gem 'rspec-rails', '>= 2.0.0.beta.17'
+gem 'rspec_tag_matchers'
+>>>>>>> 8b57c90ef9138acf3500c3a0102161335ff0d878
