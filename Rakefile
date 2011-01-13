@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 # Add your own tasks in files placed in lib/tasks ending in .rake,
 # for example lib/tasks/capistrano.rake, and they will automatically be available to Rake.
 
@@ -29,4 +28,3 @@ Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_files.include('README.markdown')
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
->>>>>>> baefffbf882dac238d37f841bd3239179aee6a85
