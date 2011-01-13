@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
-  s.name    = 'validates_as_hostname'
+  s.name    = 'validates_hostname'
   s.version = '1.0.0'
-  s.date    = '2009-06-17'
+  s.date    = '2011-01-12'
   
   s.summary     = 'Checks for valid hostnames'
   s.description = 'Extension to ActiveRecord::Base for validating hostnames'
