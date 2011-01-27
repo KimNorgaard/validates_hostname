@@ -57,6 +57,7 @@ module PAK
       end
       
       def validate_each(record, attribute, value)
+        value ||= ''
         # maximum hostname length: 255 characters
         add_error(record, attribute, :invalid_hostname_length) unless value.length.between?(1, 255)
         
