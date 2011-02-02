@@ -1,2 +1,13 @@
-Wed, 12 Jan 2011 13:04:59 +0100
-README.rdoc	Wed, 12 Jan 2011 13:04:55 +0100
+Wed, 02 Feb 2011 13:53:24 +0100
+./autotest/discover.rb	Thu, 13 Jan 2011 15:21:48 +0100
+./CHANGELOG.rdoc	Thu, 13 Jan 2011 15:21:48 +0100
+./Gemfile	Thu, 13 Jan 2011 15:21:48 +0100
+./init.rb	Thu, 13 Jan 2011 15:21:48 +0100
+./lib/validates_hostname/version.rb	Wed, 02 Feb 2011 13:51:21 +0100
+./lib/validates_hostname.rb	Wed, 02 Feb 2011 13:47:46 +0100
+./MIT-LICENSE	Thu, 13 Jan 2011 15:21:48 +0100
+./Rakefile	Fri, 28 Jan 2011 14:36:28 +0100
+./README.rdoc	Wed, 02 Feb 2011 13:50:33 +0100
+./spec/spec_helper.rb	Thu, 13 Jan 2011 15:21:48 +0100
+./spec/test_model.rb	Wed, 02 Feb 2011 12:56:25 +0100
+./spec/validates_hostname_spec.rb	Wed, 02 Feb 2011 13:46:04 +0100

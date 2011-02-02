@@ -3,6 +3,8 @@ class Record < ActiveRecord::Base
             :hostname => true
   validates :name_with_underscores,
             :hostname => { :allow_underscore => true }
+  validates :name_with_wildcard,
+            :hostname => { :allow_wildcard_hostname => true }
   validates :name_with_numeric_hostname,
             :hostname => { :allow_numeric_hostname => true }
   validates :name_with_blank,

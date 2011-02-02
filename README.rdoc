@@ -52,6 +52,8 @@ As gem
 
 * option to specify a list of valid TLDs
 
+* options to allow for wildcard hostname in first label (for use with DNS)
+
 See also http://www.zytrax.com/books/dns/apa/names.html
 
 
@@ -141,6 +143,16 @@ With :allow_numeric_hostname
   >> @record7.save
   => false
 
+With :allow_wildcard_hostname
+
+  class Record < ActiveRecord::Base
+    validates :name, :hostname => { :allow_wildcard_hostname => true }
+  end
+
+  >> @record8 = Record.new :name => '*.123.info'
+  >> @record8.save
+  => true
+
 
 == Extra validators
 
@@ -148,15 +160,19 @@ A few extra validators are included.
 
 === domainname
 
-* sets require_valid_tld      => true
+* sets require_valid_tld       => true
 
-* sets allow_numeric_hostname => true
+* sets allow_numeric_hostname  => true
 
 * returns error if there is only one label and this label is numeric
 
 === fqdn
 
-* sets require_valid_tld      => true
+* sets require_valid_tld       => true
+
+=== wildcard
+
+* sets allow_wildcard_hostname => true
 
 
 == Error messages

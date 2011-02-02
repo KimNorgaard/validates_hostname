@@ -51,7 +51,8 @@ module PAK
           :allow_underscore        => false,
           :require_valid_tld       => false,
           :valid_tlds              => ALLOWED_TLDS,
-          :allow_numeric_hostname  => false
+          :allow_numeric_hostname  => false,
+          :allow_wildcard_hostname => false
         }.merge(options)
         super(opts)
       end
@@ -64,15 +65,18 @@ module PAK
         # split each hostname into labels and do various checks
         if value.is_a?(String)
           labels = value.split '.'
-          labels.each do |label|
+          labels.each_with_index do |label, index|
             # CHECK 1: hostname label cannot be longer than 63 characters
             add_error(record, attribute, :invalid_label_length) unless value.length.between?(1, 63)
 
             # CHECK 2: hostname label cannot begin or end with hyphen
             add_error(record, attribute, :label_begins_or_ends_with_hyphen) if label =~ /^[-]/i or label =~ /[-]$/
 
+            # Take care of wildcard first label
+            next if options[:allow_wildcard_hostname] and label == '*' and index == 0
+
             # CHECK 3: hostname can only contain characters: 
-            #          a-z, 0-9, hyphen, optionally underscore
+            #          a-z, 0-9, hyphen, optional underscore, optional asterisk
             valid_chars = 'a-z0-9\-'
             valid_chars << '_' if options[:allow_underscore] == true
             add_error(record, attribute, :label_contains_invalid_characters, :valid_chars => valid_chars) unless label =~ /^[#{valid_chars}]+$/i
@@ -153,6 +157,15 @@ module PAK
       def initialize(options)
         opts = {
           :require_valid_tld       => true,
+        }.merge(options)
+        super(opts)
+      end
+    end
+
+    class WildcardValidator < HostnameValidator
+      def initialize(options)
+        opts = {
+          :allow_wildcard_hostname => true,
         }.merge(options)
         super(opts)
       end
