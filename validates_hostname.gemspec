@@ -1,29 +1,24 @@
 # -*- encoding: utf-8 -*-
+$:.push File.expand_path("../lib", __FILE__)
+require "validates_hostname/version"
 
 Gem::Specification.new do |s|
-  s.name = %q{validates_hostname}
-  s.version = "1.0.0"
-
+  s.name                      = 'validates_hostname'
+  s.version                   = PAK::ValidatesHostname::VERSION
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Kim Norgaard"]
-  s.date = %q{2011-01-12}
-  s.description = %q{Extension to ActiveRecord::Base for validating hostnames}
-  s.email = %q{jasen@jasen.dk}
-  s.extra_rdoc_files = ["README.rdoc", "CHANGELOG.rdoc", "MIT-LICENSE"]
-  s.files = ["validates_hostname.gemspec", "MIT-LICENSE", "CHANGELOG.rdoc", "README.rdoc", "Rakefile", "lib/validates_hostname", "lib/validates_hostname/version.rb", "lib/validates_hostname.rb"]
-  s.homepage = %q{https://github.com/KimNorgaard/validates_hostname}
-  s.require_paths = ["lib"]
-  s.rubyforge_project = %q{validates_hostname}
-  s.rubygems_version = %q{1.3.7}
-  s.summary = %q{Checks for valid hostnames}
+  s.authors                   = ["Kim Nørgaard"]
+  s.description               = 'Extension to ActiveRecord::Base for validating hostnames'
+  s.summary                   = 'Checks for valid hostnames'
+  s.email                     = 'jasen@jasen.dk'
+  s.extra_rdoc_files          = ["README.rdoc", "CHANGELOG.rdoc", "MIT-LICENSE"]
+  s.files                     = ["validates_hostname.gemspec", "MIT-LICENSE", "CHANGELOG.rdoc", "README.rdoc", "Rakefile", "lib/validates_hostname", "lib/validates_hostname/version.rb", "lib/validates_hostname.rb"]
+  s.homepage                  = %q{https://github.com/KimNorgaard/validates_hostname}
+  s.licenses                  = 'MIT'
+  s.require_paths             = ["lib"]
 
-  if s.respond_to? :specification_version then
-    current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
-    s.specification_version = 3
-
-    if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
-    else
-    end
-  else
-  end
+  s.add_runtime_dependency 'rails', '~> 3.0.0'
+  s.add_runtime_dependency 'rspec', '~> 2.0.0'
+  s.add_runtime_dependency 'rspec-rails', '~>2.0.0'
+  s.add_runtime_dependency 'activerecord'
+  s.add_runtime_dependency 'sqlite3-ruby'
 end

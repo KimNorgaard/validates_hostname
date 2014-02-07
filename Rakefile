@@ -1,7 +1,7 @@
 require 'rubygems'
 require 'rake/testtask'
-require 'rake/rdoctask'
-require 'rake/gempackagetask'
+require 'rdoc/task'
+require 'rubygems/package_task'
 require 'rubygems/specification'
 require 'rspec/core/rake_task'
 require './lib/validates_hostname/version'
@@ -10,19 +10,23 @@ GEM_NAME = "validates_hostname"
 GEM_VERSION = PAK::ValidatesHostname::VERSION
  
 spec = Gem::Specification.new do |s|
-  s.name = GEM_NAME
-  s.version = GEM_VERSION
-  s.platform = Gem::Platform::RUBY
-  s.rubyforge_project = "validates_hostname"
-  s.has_rdoc = true
-  s.extra_rdoc_files = ["README.rdoc", "CHANGELOG.rdoc", "MIT-LICENSE"]
-  s.summary = %q{Checks for valid hostnames}
-  s.description = %q{Extension to ActiveRecord::Base for validating hostnames}
-  s.author = "Kim Norgaard"
-  s.email = "jasen@jasen.dk"
-  s.homepage = "https://github.com/KimNorgaard/validates_hostname"
-  s.require_path = 'lib'
-  s.files = %w(validates_hostname.gemspec MIT-LICENSE CHANGELOG.rdoc README.rdoc Rakefile) + Dir.glob("{lib,spec}/**/*")
+  s.name                      = GEM_NAME
+  s.version                   = GEM_VERSION
+  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
+  s.authors                   = ["Kim Nørgaard"]
+  s.description               = 'Extension to ActiveRecord::Base for validating hostnames'
+  s.summary                   = 'Checks for valid hostnames'
+  s.email                     = 'jasen@jasen.dk'
+  s.extra_rdoc_files          = ["README.rdoc", "CHANGELOG.rdoc", "MIT-LICENSE"]
+  s.files                     = ["validates_hostname.gemspec", "MIT-LICENSE", "CHANGELOG.rdoc", "README.rdoc", "Rakefile", "lib/validates_hostname", "lib/validates_hostname/version.rb", "lib/validates_hostname.rb"]
+  s.homepage                  = %q{https://github.com/KimNorgaard/validates_hostname}
+  s.licenses                  = 'MIT'
+  s.require_paths             = ["lib"]
+  s.add_runtime_dependency 'rails', '~> 3.0.0'
+  s.add_runtime_dependency 'rspec', '~> 2.0.0'
+  s.add_runtime_dependency 'rspec-rails', '~>2.0.0'
+  s.add_runtime_dependency 'activerecord'
+  s.add_runtime_dependency 'sqlite3-ruby'
 end
 
 desc 'Test the validates_as_hostname gem/plugin.'
@@ -48,7 +52,7 @@ Rake::RDocTask.new(:rdoc) do |rdoc|
   rdoc.rdoc_files.include('lib/**/*.rb')
 end
 
-Rake::GemPackageTask.new(spec) do |pkg|
+Gem::PackageTask.new(spec) do |pkg|
   pkg.gem_spec = spec
 end
 
