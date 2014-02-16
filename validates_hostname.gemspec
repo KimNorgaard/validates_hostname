@@ -16,9 +16,9 @@ Gem::Specification.new do |s|
   s.licenses                  = 'MIT'
   s.require_paths             = ["lib"]
 
-  s.add_runtime_dependency 'rails', '~> 3.0.0'
-  s.add_runtime_dependency 'rspec', '~> 2.0.0'
-  s.add_runtime_dependency 'rspec-rails', '~>2.0.0'
+  s.add_runtime_dependency 'rails'
+  s.add_runtime_dependency 'rspec'
+  s.add_runtime_dependency 'rspec-rails'
   s.add_runtime_dependency 'activerecord'
   s.add_runtime_dependency 'sqlite3-ruby'
 end
