@@ -36,13 +36,13 @@ module PAK
     )
     
     DEFAULT_ERROR_MSG = {
-      :invalid_hostname_length            => 'hostname must be between 1 and 255 characters long',
-      :invalid_label_length               => 'label must be between 1 and 63 characters long',
-      :label_begins_or_ends_with_hyphen   => 'label begins or ends with hyphen',
-      :label_contains_invalid_characters  => "label contains invalid characters (valid characters: [%{valid_chars}])",
+      :invalid_hostname_length            => 'must be between 1 and 255 characters long',
+      :invalid_label_length               => 'must be between 1 and 63 characters long',
+      :label_begins_or_ends_with_hyphen   => 'begins or ends with hyphen',
+      :label_contains_invalid_characters  => "contains invalid characters (valid characters: [%{valid_chars}])",
       :hostname_label_is_numeric          => 'unqualified hostname part cannot consist of numeric values only',
-      :hostname_is_not_fqdn               => 'hostname is not a fully qualified domain name',
-      :single_numeric_hostname_label      => 'hostnames cannot consist of a single numeric label'
+      :hostname_is_not_fqdn               => 'is not a fully qualified domain name',
+      :single_numeric_hostname_label      => 'cannot consist of a single numeric label'
     }.freeze
     
     class HostnameValidator < ActiveModel::EachValidator
