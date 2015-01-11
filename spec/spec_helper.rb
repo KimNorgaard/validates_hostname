@@ -1,4 +1,4 @@
-require 'rails/all'
+require 'active_record'
 require 'rspec/rails'
 
 require 'validates_hostname'
