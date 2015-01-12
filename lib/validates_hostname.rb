@@ -92,7 +92,8 @@ module PAK
           :require_valid_tld       => false,
           :valid_tlds              => ALLOWED_TLDS,
           :allow_numeric_hostname  => false,
-          :allow_wildcard_hostname => false
+          :allow_wildcard_hostname => false,
+          :allow_root_label        => false
         }.merge(options)
         super(opts)
       end
