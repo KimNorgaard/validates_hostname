@@ -15,12 +15,16 @@ describe Record do
           t.string   :name_with_numeric_hostname
           t.string   :name_with_blank
           t.string   :name_with_nil
+          t.string   :name_with_valid_root_label
+          t.string   :name_with_invalid_root_label
           t.string   :domainname_with_numeric_hostname
+          t.string   :domainname_with_valid_root_label
+          t.string   :domainname_with_invalid_root_label
         end
       end
     end
   end
-  
+
   it "should save with valid hostnames" do
     record = Record.new :name                       => 'test',
                         :name_with_underscores      => 'test',
@@ -67,7 +71,7 @@ describe Record do
                         :name_with_blank            => '_test',
                         :name_with_nil              => '_test'
     record.save.should_not be_true
-    
+
     record.should have_at_least(1).errors_on(:name)
     record.should have_at_least(1).errors_on(:name_with_valid_tld)
     record.should have_at_least(1).errors_on(:name_with_test_tld)
@@ -99,7 +103,7 @@ describe Record do
                         :name_with_blank            => '*.test',
                         :name_with_nil              => '*.test'
     record.save.should_not be_true
-    
+
     record.should have_at_least(1).errors_on(:name)
     record.should have_at_least(1).errors_on(:name_with_underscores)
     record.should have_at_least(1).errors_on(:name_with_valid_tld)
@@ -370,5 +374,100 @@ describe Record do
                         :name_with_nil              => 'test'
     record.save.should be_true
   end
-  
+
+  it "should not save hostnames containing consecutive dots" do
+    record = Record.new :name                       => 'te...st',
+                        :name_with_underscores      => 'test',
+                        :name_with_wildcard         => 'test',
+                        :name_with_valid_tld        => 'test.org',
+                        :name_with_test_tld         => 'test.test',
+                        :name_with_numeric_hostname => 'test',
+                        :name_with_blank            => 'test',
+                        :name_with_nil              => 'test'
+    record.save.should_not be_true
+    record.should have_at_least(1).errors_on(:name)
+  end
+
+  it "should save hostnames with trailing dot if option is true" do
+    record = Record.new :name_with_valid_root_label => 'test.org.',
+                        :name                       => 'test',
+                        :name_with_underscores      => 'test',
+                        :name_with_wildcard         => 'test',
+                        :name_with_valid_tld        => 'test.org',
+                        :name_with_test_tld         => 'test.test',
+                        :name_with_numeric_hostname => 'test',
+                        :name_with_blank            => 'test',
+                        :name_with_nil              => 'test'
+    record.save.should be_true
+  end
+
+  it "should not save hostnames with trailing dot if option is false" do
+    record = Record.new :name_with_invalid_root_label => 'test.org.',
+                        :name                       => 'test',
+                        :name_with_underscores      => 'test',
+                        :name_with_wildcard         => 'test',
+                        :name_with_valid_tld        => 'test.org',
+                        :name_with_test_tld         => 'test.test',
+                        :name_with_numeric_hostname => 'test',
+                        :name_with_blank            => 'test',
+                        :name_with_nil              => 'test'
+    record.save.should_not be_true
+    record.should have_at_least(1).errors_on(:name_with_invalid_root_label)
+  end
+
+  it "should save hostnames consisting of a single dot if option is true" do
+    record = Record.new :name_with_valid_root_label => '.',
+                        :name                       => 'test',
+                        :name_with_underscores      => 'test',
+                        :name_with_wildcard         => 'test',
+                        :name_with_valid_tld        => 'test.org',
+                        :name_with_test_tld         => 'test.test',
+                        :name_with_numeric_hostname => 'test',
+                        :name_with_blank            => 'test',
+                        :name_with_nil              => 'test'
+    record.save.should be_true
+  end
+
+  it "should not save hostnames consisting of a single dot" do
+    record = Record.new :name_with_invalid_root_label => '.',
+                        :name                       => 'test',
+                        :name_with_underscores      => 'test',
+                        :name_with_wildcard         => 'test',
+                        :name_with_valid_tld        => 'test.org',
+                        :name_with_test_tld         => 'test.test',
+                        :name_with_numeric_hostname => 'test',
+                        :name_with_blank            => 'test',
+                        :name_with_nil              => 'test'
+    record.save.should_not be_true
+    record.should have_at_least(1).errors_on(:name_with_invalid_root_label)
+  end
+
+  it "should save domainnames consisting of a single dot if option is true" do
+    record = Record.new :domainname_with_valid_root_label => '.',
+                        :name                       => 'test',
+                        :name_with_underscores      => 'test',
+                        :name_with_wildcard         => 'test',
+                        :name_with_valid_tld        => 'test.org',
+                        :name_with_test_tld         => 'test.test',
+                        :name_with_numeric_hostname => 'test',
+                        :name_with_blank            => 'test',
+                        :name_with_nil              => 'test'
+    record.save.should be_true
+  end
+
+  it "should not save domainnames consisting of a single dot" do
+    record = Record.new :domainname_with_invalid_root_label => '.',
+                        :name                       => 'test',
+                        :name_with_underscores      => 'test',
+                        :name_with_wildcard         => 'test',
+                        :name_with_valid_tld        => 'test.org',
+                        :name_with_test_tld         => 'test.test',
+                        :name_with_numeric_hostname => 'test',
+                        :name_with_blank            => 'test',
+                        :name_with_nil              => 'test'
+    record.save.should_not be_true
+    record.should have_at_least(1).errors_on(:domainname_with_invalid_root_label)
+  end
+
+
 end

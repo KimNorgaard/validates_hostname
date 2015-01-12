@@ -9,7 +9,7 @@ module PAK
     # List from IANA: http://www.iana.org/domains/root/db/
     #                 http://data.iana.org/TLD/tlds-alpha-by-domain.txt
     ALLOWED_TLDS = %w(
-      abogado ac academy accountants active actor ad adult ae aero af ag agency ai
+      . abogado ac academy accountants active actor ad adult ae aero af ag agency ai
       airforce al allfinanz alsace am amsterdam an android ao aq aquarelle ar archi
       army arpa as asia associates at attorney au auction audio autos aw ax axa az ba
       band bank bar bargains bayern bb bd be beer berlin best bf bg bh bi bid bike
@@ -82,7 +82,9 @@ module PAK
       :label_contains_invalid_characters  => "contains invalid characters (valid characters: [%{valid_chars}])",
       :hostname_label_is_numeric          => 'unqualified hostname part cannot consist of numeric values only',
       :hostname_is_not_fqdn               => 'is not a fully qualified domain name',
-      :single_numeric_hostname_label      => 'cannot consist of a single numeric label'
+      :single_numeric_hostname_label      => 'cannot consist of a single numeric label',
+      :hostname_contains_consecutive_dots => 'must not contain consecutive dots',
+      :hostname_ends_with_dot             => 'must not end with a dot'
     }.freeze
 
     class HostnameValidator < ActiveModel::EachValidator
@@ -100,6 +102,7 @@ module PAK
 
       def validate_each(record, attribute, value)
         value ||= ''
+
         # maximum hostname length: 255 characters
         add_error(record, attribute, :invalid_hostname_length) unless value.length.between?(1, 255)
 
@@ -125,7 +128,7 @@ module PAK
 
           # CHECK 4: the unqualified hostname portion cannot consist of 
           #          numeric values only
-          if options[:allow_numeric_hostname] == false
+          if options[:allow_numeric_hostname] == false and labels.length > 0
             is_numeric_only = (
               (
                 Integer(labels[0]) rescue false
@@ -137,10 +140,24 @@ module PAK
           # CHECK 5: in order to be fully qualified, the full hostname's
           #          TLD must be valid
           if options[:require_valid_tld] == true
+            my_tld = value == '.' ? value : labels.last
+            my_tld ||= ''
             has_tld = options[:valid_tlds].select {
-              |tld| tld =~ /^#{Regexp.escape(labels.last || '')}$/i
+              |tld| tld =~ /^#{Regexp.escape(my_tld)}$/i
             }.empty? ? false : true
             add_error(record, attribute, :hostname_is_not_fqdn) unless has_tld
+          end
+
+          # CHECK 6: hostname may not contain consecutive dots
+          if value =~ /\.\./
+            add_error(record, attribute, :hostname_contains_consecutive_dots)
+          end
+
+          # CHECK 7: do not allow trailing dot unless option is set
+          if options[:allow_root_label] == false
+            if value =~ /\.$/
+              add_error(record, attribute, :hostname_ends_with_dot)
+            end
           end
         end
       end
