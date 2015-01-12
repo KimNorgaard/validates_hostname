@@ -1,4 +1,5 @@
 require 'active_support/concern'
+require 'active_record'
 require 'active_model'
 
 module PAK
