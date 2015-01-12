@@ -21,5 +21,5 @@ Gem::Specification.new do |s|
 
   s.add_development_dependency 'rspec', '~> 2.14'
   s.add_development_dependency 'rspec-rails'
-  s.add_development_dependency 'sqlite3-ruby'
+  s.add_development_dependency 'sqlite3'
 end
