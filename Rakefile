@@ -22,11 +22,13 @@ spec = Gem::Specification.new do |s|
   s.homepage                  = %q{https://github.com/KimNorgaard/validates_hostname}
   s.licenses                  = 'MIT'
   s.require_paths             = ["lib"]
-  s.add_runtime_dependency 'rails'
-  s.add_runtime_dependency 'rspec'
-  s.add_runtime_dependency 'rspec-rails'
-  s.add_runtime_dependency 'activerecord'
-  s.add_runtime_dependency 'sqlite3-ruby'
+  s.add_runtime_dependency 'activerecord', '>= 3.0'
+  s.add_runtime_dependency 'activesupport', '>= 3.0'
+  s.add_development_dependency 'rspec', '~> 2.14'
+  s.add_development_dependency 'rspec-rails'
+  s.add_development_dependency 'rails'
+  s.add_development_dependency 'sqlite3'
+  s.add_development_dependency 'pry-debugger'
 end
 
 desc 'Test the validates_as_hostname gem/plugin.'
