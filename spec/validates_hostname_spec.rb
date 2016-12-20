@@ -1,26 +1,28 @@
 require 'spec_helper'
+
 ActiveRecord::Base.establish_connection :adapter => 'sqlite3', :database => ':memory:'
+
+# Silence schema load
+ActiveRecord::Schema.verbose = false
 
 describe Record do
   before(:all) do
-    ActiveRecord::Base.connection.tables.each { |table| ActiveRecord::Base.connection.drop_table(table) }
-    silence_stream(STDOUT) do
-      ActiveRecord::Schema.define(:version => 1) do
-        create_table :records do |t|
-          t.string   :name
-          t.string   :name_with_underscores
-          t.string   :name_with_wildcard
-          t.string   :name_with_valid_tld
-          t.string   :name_with_test_tld
-          t.string   :name_with_numeric_hostname
-          t.string   :name_with_blank
-          t.string   :name_with_nil
-          t.string   :name_with_valid_root_label
-          t.string   :name_with_invalid_root_label
-          t.string   :domainname_with_numeric_hostname
-          t.string   :domainname_with_valid_root_label
-          t.string   :domainname_with_invalid_root_label
-        end
+    ActiveRecord::Base.connection.data_sources.each { |source| ActiveRecord::Base.connection.drop_table(source) }
+    ActiveRecord::Schema.define(:version => 1) do
+      create_table :records do |t|
+        t.string   :name
+        t.string   :name_with_underscores
+        t.string   :name_with_wildcard
+        t.string   :name_with_valid_tld
+        t.string   :name_with_test_tld
+        t.string   :name_with_numeric_hostname
+        t.string   :name_with_blank
+        t.string   :name_with_nil
+        t.string   :name_with_valid_root_label
+        t.string   :name_with_invalid_root_label
+        t.string   :domainname_with_numeric_hostname
+        t.string   :domainname_with_valid_root_label
+        t.string   :domainname_with_invalid_root_label
       end
     end
   end
@@ -34,7 +36,7 @@ describe Record do
                         :name_with_numeric_hostname => 'test',
                         :name_with_blank            => 'test',
                         :name_with_nil              => 'test'
-    record.save.should be_true
+    record.save.should be_truthy
   end
 
   it "should save with hostnames with hyphens" do
@@ -46,7 +48,7 @@ describe Record do
                         :name_with_numeric_hostname => 't-est',
                         :name_with_blank            => 't-est',
                         :name_with_nil              => 't-est'
-    record.save.should be_true
+    record.save.should be_truthy
   end
 
   it "should save with hostnames with underscores if option is true" do
@@ -58,7 +60,7 @@ describe Record do
                         :name_with_numeric_hostname => 'test',
                         :name_with_blank            => 'test',
                         :name_with_nil              => 'test'
-    record.save.should be_true
+    record.save.should be_truthy
   end
 
   it "should not save with hostnames with underscores if option is false" do
@@ -70,7 +72,7 @@ describe Record do
                         :name_with_numeric_hostname => '_test',
                         :name_with_blank            => '_test',
                         :name_with_nil              => '_test'
-    record.save.should_not be_true
+    record.save.should_not be_truthy
 
     record.should have_at_least(1).errors_on(:name)
     record.should have_at_least(1).errors_on(:name_with_valid_tld)
@@ -90,7 +92,7 @@ describe Record do
                         :name_with_numeric_hostname => 'test',
                         :name_with_blank            => 'test',
                         :name_with_nil              => 'test'
-    record.save.should be_true
+    record.save.should be_truthy
   end
 
   it "should not save with hostnames with wildcard if option is false" do
@@ -102,7 +104,7 @@ describe Record do
                         :name_with_numeric_hostname => '*.test',
                         :name_with_blank            => '*.test',
                         :name_with_nil              => '*.test'
-    record.save.should_not be_true
+    record.save.should_not be_truthy
 
     record.should have_at_least(1).errors_on(:name)
     record.should have_at_least(1).errors_on(:name_with_underscores)
@@ -122,7 +124,7 @@ describe Record do
                         :name_with_numeric_hostname => 'test',
                         :name_with_underscores      => 'test',
                         :name_with_nil              => 'test'
-    record.save.should be_true
+    record.save.should be_truthy
   end
 
   it "should not save with blank hostname" do
@@ -134,7 +136,7 @@ describe Record do
                         :name_with_numeric_hostname => '',
                         :name_with_nil              => '',
                         :name_with_blank            => ''
-    record.save.should_not be_true
+    record.save.should_not be_truthy
     record.should have_at_least(1).errors_on(:name)
     record.should have_at_least(1).errors_on(:name_with_underscores)
     record.should have_at_least(1).errors_on(:name_with_wildcard)
@@ -153,7 +155,7 @@ describe Record do
                         :name_with_test_tld         => 'test.test',
                         :name_with_numeric_hostname => 'test',
                         :name_with_blank            => 'test'
-    record.save.should be_true
+    record.save.should be_truthy
   end
 
   it "should not save with too long hostname" do
@@ -166,7 +168,7 @@ describe Record do
                         :name_with_numeric_hostname => longname,
                         :name_with_blank            => longname,
                         :name_with_nil              => longname
-    record.save.should_not be_true
+    record.save.should_not be_truthy
     record.should have_at_least(1).errors_on(:name)
     record.should have_at_least(1).errors_on(:name_with_underscores)
     record.should have_at_least(1).errors_on(:name_with_wildcard)
@@ -187,7 +189,7 @@ describe Record do
                         :name_with_numeric_hostname => long_labels,
                         :name_with_blank            => long_labels,
                         :name_with_nil              => long_labels
-    record.save.should_not be_true
+    record.save.should_not be_truthy
     record.should have_at_least(1).errors_on(:name)
   end
   
@@ -203,7 +205,7 @@ describe Record do
       record.name_with_numeric_hostname = testname
       record.name_with_blank            = testname
       record.name_with_nil              = testname
-      record.save.should_not be_true
+      record.save.should_not be_truthy
       record.should have_at_least(1).errors_on(:name)
       record.should have_at_least(1).errors_on(:name_with_underscores)
       record.should have_at_least(1).errors_on(:name_with_wildcard)
@@ -224,7 +226,7 @@ describe Record do
                         :name_with_numeric_hostname => '-test',
                         :name_with_blank            => '-test',
                         :name_with_nil              => '-test'
-    record.save.should_not be_true
+    record.save.should_not be_truthy
     record.should have_at_least(1).errors_on(:name)
     record.should have_at_least(1).errors_on(:name_with_underscores)
     record.should have_at_least(1).errors_on(:name_with_wildcard)
@@ -244,7 +246,7 @@ describe Record do
                         :name_with_numeric_hostname => 'test-',
                         :name_with_blank            => 'test-',
                         :name_with_nil              => 'test-'
-    record.save.should_not be_true
+    record.save.should_not be_truthy
     record.should have_at_least(1).errors_on(:name)
     record.should have_at_least(1).errors_on(:name_with_underscores)
     record.should have_at_least(1).errors_on(:name_with_wildcard)
@@ -264,7 +266,7 @@ describe Record do
                         :name_with_numeric_hostname => 'test',
                         :name_with_blank            => '12345',
                         :name_with_nil              => '12345'
-    record.save.should_not be_true
+    record.save.should_not be_truthy
     record.should have_at_least(1).errors_on(:name)
     record.should have_at_least(1).errors_on(:name_with_underscores)
     record.should have_at_least(1).errors_on(:name_with_wildcard)
@@ -283,7 +285,7 @@ describe Record do
                         :name_with_test_tld         => 'test.test',
                         :name_with_blank            => 'test',
                         :name_with_nil              => 'test'
-    record.save.should be_true
+    record.save.should be_truthy
   end
   
   it "should not save hostnames with invalid tld if option is true" do
@@ -295,7 +297,7 @@ describe Record do
                         :name_with_numeric_hostname => 'test',
                         :name_with_blank            => 'test',
                         :name_with_nil              => 'test'
-    record.save.should_not be_true
+    record.save.should_not be_truthy
     record.should have_at_least(1).errors_on(:name_with_valid_tld)
   end
   
@@ -308,7 +310,7 @@ describe Record do
                         :name_with_numeric_hostname => 'test',
                         :name_with_blank            => 'test',
                         :name_with_nil              => 'test'
-    record.save.should be_true
+    record.save.should be_truthy
   end
   
   it "should save hostnames with invalid tld if option is false" do
@@ -320,7 +322,7 @@ describe Record do
                         :name_with_numeric_hostname => 'test.invalidtld',
                         :name_with_blank            => 'test.invalidtld',
                         :name_with_nil              => 'test.invalidtld'
-    record.save.should be_true
+    record.save.should be_truthy
   end
   
   it "should save hostnames with tld from list" do
@@ -332,7 +334,7 @@ describe Record do
                         :name_with_numeric_hostname => 'test',
                         :name_with_blank            => 'test',
                         :name_with_nil              => 'test'
-    record.save.should be_true
+    record.save.should be_truthy
   end
   
   it "should not save hostnames with invalid tld from list" do
@@ -344,7 +346,7 @@ describe Record do
                         :name_with_numeric_hostname => 'test',
                         :name_with_blank            => 'test',
                         :name_with_nil              => 'test'
-    record.save.should_not be_true
+    record.save.should_not be_truthy
     record.should have_at_least(1).errors_on(:name_with_test_tld)
   end
   
@@ -358,7 +360,7 @@ describe Record do
                         :name_with_numeric_hostname => 'test',
                         :name_with_blank            => 'test',
                         :name_with_nil              => 'test'
-    record.save.should_not be_true
+    record.save.should_not be_truthy
     record.should have_at_least(1).errors_on(:domainname_with_numeric_hostname)
   end
 
@@ -372,7 +374,7 @@ describe Record do
                         :name_with_numeric_hostname => 'test',
                         :name_with_blank            => 'test',
                         :name_with_nil              => 'test'
-    record.save.should be_true
+    record.save.should be_truthy
   end
 
   it "should not save hostnames containing consecutive dots" do
@@ -384,7 +386,7 @@ describe Record do
                         :name_with_numeric_hostname => 'test',
                         :name_with_blank            => 'test',
                         :name_with_nil              => 'test'
-    record.save.should_not be_true
+    record.save.should_not be_truthy
     record.should have_at_least(1).errors_on(:name)
   end
 
@@ -398,7 +400,7 @@ describe Record do
                         :name_with_numeric_hostname => 'test',
                         :name_with_blank            => 'test',
                         :name_with_nil              => 'test'
-    record.save.should be_true
+    record.save.should be_truthy
   end
 
   it "should not save hostnames with trailing dot if option is false" do
@@ -411,7 +413,7 @@ describe Record do
                         :name_with_numeric_hostname => 'test',
                         :name_with_blank            => 'test',
                         :name_with_nil              => 'test'
-    record.save.should_not be_true
+    record.save.should_not be_truthy
     record.should have_at_least(1).errors_on(:name_with_invalid_root_label)
   end
 
@@ -425,7 +427,7 @@ describe Record do
                         :name_with_numeric_hostname => 'test',
                         :name_with_blank            => 'test',
                         :name_with_nil              => 'test'
-    record.save.should be_true
+    record.save.should be_truthy
   end
 
   it "should not save hostnames consisting of a single dot" do
@@ -438,7 +440,7 @@ describe Record do
                         :name_with_numeric_hostname => 'test',
                         :name_with_blank            => 'test',
                         :name_with_nil              => 'test'
-    record.save.should_not be_true
+    record.save.should_not be_truthy
     record.should have_at_least(1).errors_on(:name_with_invalid_root_label)
   end
 
@@ -452,7 +454,7 @@ describe Record do
                         :name_with_numeric_hostname => 'test',
                         :name_with_blank            => 'test',
                         :name_with_nil              => 'test'
-    record.save.should be_true
+    record.save.should be_truthy
   end
 
   it "should not save domainnames consisting of a single dot" do
@@ -465,7 +467,7 @@ describe Record do
                         :name_with_numeric_hostname => 'test',
                         :name_with_blank            => 'test',
                         :name_with_nil              => 'test'
-    record.save.should_not be_true
+    record.save.should_not be_truthy
     record.should have_at_least(1).errors_on(:domainname_with_invalid_root_label)
   end
 
