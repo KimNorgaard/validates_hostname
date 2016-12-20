@@ -263,7 +263,7 @@ describe Record do
                         :name_with_wildcard         => '12345',
                         :name_with_valid_tld        => '12345.org',
                         :name_with_test_tld         => '12345.test',
-                        :name_with_numeric_hostname => 'test',
+                        :name_with_numeric_hostname => '0x12345',
                         :name_with_blank            => '12345',
                         :name_with_nil              => '12345'
     record.save.should_not be_truthy
