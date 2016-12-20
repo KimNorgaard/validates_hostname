@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
     if Gem::Version.new(Gem::VERSION) >= Gem::Version.new('1.2.0') then
       s.add_runtime_dependency(%q<activerecord>.freeze, [">= 3.0"])
       s.add_runtime_dependency(%q<activesupport>.freeze, [">= 3.0"])
-      s.add_development_dependency(%q<rspec>.freeze, ["~> 2.14"])
+      s.add_development_dependency(%q<rspec>.freeze, ["~> 3.0"])
       s.add_development_dependency(%q<rspec-rails>.freeze, [">= 0"])
       s.add_development_dependency(%q<rails>.freeze, [">= 0"])
       s.add_development_dependency(%q<sqlite3>.freeze, [">= 0"])
@@ -33,7 +33,7 @@ Gem::Specification.new do |s|
     else
       s.add_dependency(%q<activerecord>.freeze, [">= 3.0"])
       s.add_dependency(%q<activesupport>.freeze, [">= 3.0"])
-      s.add_dependency(%q<rspec>.freeze, ["~> 2.14"])
+      s.add_dependency(%q<rspec>.freeze, ["~> 3.0"])
       s.add_dependency(%q<rspec-rails>.freeze, [">= 0"])
       s.add_dependency(%q<rails>.freeze, [">= 0"])
       s.add_dependency(%q<sqlite3>.freeze, [">= 0"])
@@ -43,7 +43,7 @@ Gem::Specification.new do |s|
   else
     s.add_dependency(%q<activerecord>.freeze, [">= 3.0"])
     s.add_dependency(%q<activesupport>.freeze, [">= 3.0"])
-    s.add_dependency(%q<rspec>.freeze, ["~> 2.14"])
+    s.add_dependency(%q<rspec>.freeze, ["~> 3.0"])
     s.add_dependency(%q<rspec-rails>.freeze, [">= 0"])
     s.add_dependency(%q<rails>.freeze, [">= 0"])
     s.add_dependency(%q<sqlite3>.freeze, [">= 0"])
