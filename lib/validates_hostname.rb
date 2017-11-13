@@ -186,7 +186,7 @@ module PAK
           labels = value.split '.'
           labels.each_with_index do |label, index|
             # CHECK 1: hostname label cannot be longer than 63 characters
-            add_error(record, attribute, :invalid_label_length) unless value.length.between?(1, 63)
+            add_error(record, attribute, :invalid_label_length) unless label.length.between?(1, 63)
 
             # CHECK 2: hostname label cannot begin or end with hyphen
             add_error(record, attribute, :label_begins_or_ends_with_hyphen) if label =~ /^[-]/i or label =~ /[-]$/
