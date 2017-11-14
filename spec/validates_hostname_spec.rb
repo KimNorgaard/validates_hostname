@@ -158,6 +158,19 @@ describe Record do
     record.save.should be_truthy
   end
 
+  it "should save when domain name length between 64 and 255" do
+    long_labels = (('t' * 60) + '.' + ('t' * 60))
+    record = Record.new :name                       => long_labels,
+                        :name_with_underscores      => long_labels,
+                        :name_with_wildcard         => long_labels,
+                        :name_with_valid_tld        => long_labels + ".org",
+                        :name_with_test_tld         => long_labels + ".test",
+                        :name_with_numeric_hostname => long_labels,
+                        :name_with_blank            => long_labels,
+                        :name_with_nil              => long_labels
+    record.save.should be_truthy
+  end
+
   it "should not save with too long hostname" do
     longname=('t' * 256)
     record = Record.new :name                       => longname,
@@ -192,7 +205,7 @@ describe Record do
     record.save.should_not be_truthy
     record.should have_at_least(1).errors_on(:name)
   end
-  
+
   it "shold not save with invalid characters" do
     record = Record.new
     %w( ; : * ^ ~ + ' ! # " % & / ( ) = ? $ \\ ).each do |char|
@@ -275,7 +288,7 @@ describe Record do
     record.should have_at_least(1).errors_on(:name_with_blank)
     record.should have_at_least(1).errors_on(:name_with_nil)
   end
-  
+
   it "should save hostnames with numeric only hostname labels if option is true" do
     record = Record.new :name_with_numeric_hostname => '12345',
                         :name                       => 'test',
@@ -287,7 +300,7 @@ describe Record do
                         :name_with_nil              => 'test'
     record.save.should be_truthy
   end
-  
+
   it "should not save hostnames with invalid tld if option is true" do
     record = Record.new :name_with_valid_tld        => 'test.invalidtld',
                         :name                       => 'test',
@@ -300,7 +313,7 @@ describe Record do
     record.save.should_not be_truthy
     record.should have_at_least(1).errors_on(:name_with_valid_tld)
   end
-  
+
   it "should save hostnames with valid tld if option is true" do
     record = Record.new :name_with_valid_tld        => 'test.org',
                         :name                       => 'test',
@@ -312,7 +325,7 @@ describe Record do
                         :name_with_nil              => 'test'
     record.save.should be_truthy
   end
-  
+
   it "should save hostnames with invalid tld if option is false" do
     record = Record.new :name                       => 'test.invalidtld',
                         :name_with_underscores      => 'test.invalidtld',
@@ -324,7 +337,7 @@ describe Record do
                         :name_with_nil              => 'test.invalidtld'
     record.save.should be_truthy
   end
-  
+
   it "should save hostnames with tld from list" do
     record = Record.new :name_with_test_tld         => 'test.test',
                         :name                       => 'test',
@@ -336,7 +349,7 @@ describe Record do
                         :name_with_nil              => 'test'
     record.save.should be_truthy
   end
-  
+
   it "should not save hostnames with invalid tld from list" do
     record = Record.new :name_with_test_tld         => 'test.invalidtld',
                         :name                       => 'test',
@@ -349,7 +362,7 @@ describe Record do
     record.save.should_not be_truthy
     record.should have_at_least(1).errors_on(:name_with_test_tld)
   end
-  
+
   it "should not save domainnames with single numeric hostname labels" do
     record = Record.new :domainname_with_numeric_hostname => '12345',
                         :name                       => 'test',
