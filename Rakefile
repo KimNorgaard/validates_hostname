@@ -14,7 +14,7 @@ spec = Gem::Specification.new do |s|
   s.version                   = GEM_VERSION
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors                   = ["Kim Nørgaard"]
-  s.description               = 'Extension to ActiveRecord::Base for validating hostnames'
+  s.description               = 'Extension to validate hostnames in Rails'
   s.summary                   = 'Checks for valid hostnames'
   s.email                     = 'jasen@jasen.dk'
   s.extra_rdoc_files          = ["README.rdoc", "CHANGELOG.rdoc", "MIT-LICENSE"]
@@ -22,12 +22,8 @@ spec = Gem::Specification.new do |s|
   s.homepage                  = %q{https://github.com/KimNorgaard/validates_hostname}
   s.licenses                  = 'MIT'
   s.require_paths             = ["lib"]
-  s.add_runtime_dependency 'activerecord', '>= 3.0'
-  s.add_runtime_dependency 'activesupport', '>= 3.0'
+  s.add_runtime_dependency 'activemodel', '>= 4.0'
   s.add_development_dependency 'rspec', '~> 3.0'
-  s.add_development_dependency 'rspec-rails'
-  s.add_development_dependency 'rails'
-  s.add_development_dependency 'sqlite3'
   s.add_development_dependency 'pry-byebug'
   s.add_development_dependency 'rspec-collection_matchers'
 end

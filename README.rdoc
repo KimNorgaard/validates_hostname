@@ -5,7 +5,7 @@
 
 == Description
 
-Extension to ActiveRecord::Base for validating hostnames and domain names.
+Validate hostnames and domain names in Rails.
 
 
 == Features
@@ -15,6 +15,8 @@ Extension to ActiveRecord::Base for validating hostnames and domain names.
 * Supports I18n for the error messages
 
 == Installation
+
+Requires Rails 4 or newer.
 
 As plugin (from master)
 
