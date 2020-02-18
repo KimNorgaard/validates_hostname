@@ -256,14 +256,12 @@ module PAK
 
         if value.is_a?(String)
           labels = value.split '.'
-          labels.each do |label|
-            # CHECK 1: if there is only one label it cannot be numeric even
-            #          though numeric hostnames are allowed
-            if options[:allow_numeric_hostname] == true
-              is_numeric_only = labels[0] =~ /\A\d+\z/
-              if is_numeric_only and labels.size == 1
-                add_error(record, attribute, :single_numeric_hostname_label)
-              end
+          # CHECK 1: if there is only one label it cannot be numeric even
+          #          though numeric hostnames are allowed
+          if options[:allow_numeric_hostname] == true
+            is_numeric_only = labels[0] =~ /\A\d+\z/
+            if is_numeric_only and labels.size == 1
+              add_error(record, attribute, :single_numeric_hostname_label)
             end
           end
         end
