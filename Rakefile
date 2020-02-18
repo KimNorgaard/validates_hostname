@@ -8,7 +8,7 @@ require './lib/validates_hostname/version'
 
 GEM_NAME = "validates_hostname"
 GEM_VERSION = PAK::ValidatesHostname::VERSION
- 
+
 spec = Gem::Specification.new do |s|
   s.name                      = GEM_NAME
   s.version                   = GEM_VERSION
@@ -70,4 +70,3 @@ task :make_spec do
     file.puts spec.to_ruby
   end
 end
- 
