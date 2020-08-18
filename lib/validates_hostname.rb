@@ -238,7 +238,7 @@ module PAK
           :default => [DEFAULT_ERROR_MSG[message], options[:message]],
           :scope   => [:errors, :messages]
         }.merge(interpolators.last.is_a?(Hash) ? interpolators.pop : {})
-        record.errors.add(attr_name, I18n.t( message, args ))
+        record.errors.add(attr_name, I18n.t( message, **args ))
       end
     end
 
@@ -272,7 +272,7 @@ module PAK
           :default => [DEFAULT_ERROR_MSG[message], options[:message]],
           :scope   => [:errors, :messages]
         }.merge(interpolators.last.is_a?(Hash) ? interpolators.pop : {})
-        record.errors.add(attr_name, I18n.t( message, args ))
+        record.errors.add(attr_name, I18n.t( message, **args ))
       end
     end
 

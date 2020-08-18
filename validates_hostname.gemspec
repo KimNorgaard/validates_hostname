@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
-# stub: validates_hostname 1.0.7 ruby lib
+# stub: validates_hostname 1.0.11 ruby lib
 
 Gem::Specification.new do |s|
   s.name = "validates_hostname".freeze
-  s.version = "1.0.7"
+  s.version = "1.0.11"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0".freeze) if s.respond_to? :required_rubygems_version=
   s.require_paths = ["lib".freeze]
