@@ -1,8 +1,5 @@
-require 'active_record'
-require "rails/all"
-require 'rspec/rails'
+require 'rspec'
 require 'rspec/collection_matchers'
-
 require 'validates_hostname'
 require 'test_model'
 
