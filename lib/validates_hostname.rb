@@ -210,7 +210,9 @@ module PAK
 
           # CHECK 5: in order to be fully qualified, the full hostname's
           #          TLD must be valid
-          if options[:require_valid_tld] == true
+          require_valid_tld = options[:require_valid_tld]
+          require_valid_tld = record.send(require_valid_tld) if require_valid_tld.is_a?(Symbol)
+          if require_valid_tld
             my_tld = value == '.' ? value : labels.last
             my_tld ||= ''
             has_tld = options[:valid_tlds].select {
