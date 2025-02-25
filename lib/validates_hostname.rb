@@ -302,4 +302,6 @@ module PAK
   end
 end
 
-ActiveRecord::Base.send(:include, PAK::ValidatesHostname)
+ActiveSupport.on_load(:active_record) do
+  include PAK::ValidatesHostname
+end
