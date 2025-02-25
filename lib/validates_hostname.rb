@@ -241,7 +241,7 @@ module PAK
 
       def add_error(record, attr_name, message, *interpolators)
         args = {
-          :default => [DEFAULT_ERROR_MSG[message], options[:message]],
+          :default => [options[:message], DEFAULT_ERROR_MSG[message]].compact,
           :scope   => [:errors, :messages]
         }.merge(interpolators.last.is_a?(Hash) ? interpolators.pop : {})
         record.errors.add(attr_name, I18n.t( message, **args ))
@@ -275,7 +275,7 @@ module PAK
 
       def add_error(record, attr_name, message, *interpolators)
         args = {
-          :default => [DEFAULT_ERROR_MSG[message], options[:message]],
+          :default => [options[:message], DEFAULT_ERROR_MSG[message]].compact,
           :scope   => [:errors, :messages]
         }.merge(interpolators.last.is_a?(Hash) ? interpolators.pop : {})
         record.errors.add(attr_name, I18n.t( message, **args ))

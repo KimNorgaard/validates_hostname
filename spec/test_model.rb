@@ -19,6 +19,9 @@ class Record < ActiveRecord::Base
             :hostname => true,
             :allow_nil => true
 
+  validates :name_with_message,
+            :hostname => { :message => 'test' }
+
   validates :name_with_valid_tld,
             :hostname => { :require_valid_tld => true }
 
