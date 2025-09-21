@@ -58,9 +58,9 @@ end
 
 ## Options and their defaults:
 
-- `:allow_underscore => false`
-- `:require_valid_tld => false`
-- `:valid_tlds => Array` of allowed TLDs (can only be used with `:require_fqdn => true`)
+- `:allow_underscore` => `false`
+- `:require_valid_tld` => `false`
+- `:valid_tlds` => Array of allowed TLDs (can only be used with `:require_fqdn` => `true`)
 - `:allow_numeric_hostname => false`
 
 ## Examples
