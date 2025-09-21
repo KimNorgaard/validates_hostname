@@ -1,5 +1,14 @@
-/.bundle
+/pkg/
+/tmp/
+*.gem
+
 .DS_Store
-*/.DS_Store
+.vscode/
+.idea/
+.env
+
 Gemfile.lock
-pkg/
+
+/.yardoc/
+/doc/
+/rdoc/
