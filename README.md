@@ -77,7 +77,7 @@ Without options:
 
 ```ruby
 class Record < ActiveRecord::Base
-  validates :host, hostname: true
+  validates :name, hostname: true
 end
 
 >> @record = Record.new(name: "horse")
