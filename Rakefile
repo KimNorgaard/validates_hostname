@@ -1,72 +1,29 @@
-require 'rubygems'
-require 'rake/testtask'
-require 'rdoc/task'
-require 'rubygems/package_task'
-require 'rubygems/specification'
+# frozen_string_literal: true
+
+require 'bundler/gem_tasks'
 require 'rspec/core/rake_task'
-require './lib/validates_hostname/version'
+require 'rubocop/rake_task'
 
-GEM_NAME = "validates_hostname"
-GEM_VERSION = PAK::ValidatesHostname::VERSION
+# Set the default task to run both specs and linting.
+task default: :ci
 
-spec = Gem::Specification.new do |s|
-  s.name                      = GEM_NAME
-  s.version                   = GEM_VERSION
-  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors                   = ["Kim Nørgaard"]
-  s.description               = 'Extension to ActiveRecord::Base for validating hostnames'
-  s.summary                   = 'Checks for valid hostnames'
-  s.email                     = 'jasen@jasen.dk'
-  s.extra_rdoc_files          = ["README.rdoc", "CHANGELOG.rdoc", "MIT-LICENSE"]
-  s.files                     = ["validates_hostname.gemspec", "MIT-LICENSE", "CHANGELOG.rdoc", "README.rdoc", "Rakefile", "lib/validates_hostname", "lib/validates_hostname/version.rb", "lib/validates_hostname.rb"]
-  s.homepage                  = %q{https://github.com/KimNorgaard/validates_hostname}
-  s.licenses                  = 'MIT'
-  s.require_paths             = ["lib"]
-  s.add_runtime_dependency 'activerecord', '>= 3.0'
-  s.add_runtime_dependency 'activesupport', '>= 3.0'
-  s.add_development_dependency 'rspec', '~> 3.0'
-  s.add_development_dependency 'rspec-rails'
-  s.add_development_dependency 'rails'
-  s.add_development_dependency 'sqlite3'
-  s.add_development_dependency 'pry-byebug'
-  s.add_development_dependency 'rspec-collection_matchers'
+# --- Testing Tasks ---
+desc 'Run RSpec tests'
+RSpec::Core::RakeTask.new(:spec)
+
+# --- Linting Tasks ---
+desc 'Run RuboCop for static analysis'
+RuboCop::RakeTask.new(:rubocop)
+
+# --- Continuous Integration Task ---
+desc 'Run all tests and linters'
+task ci: %i[spec rubocop]
+
+# --- Development Tasks ---
+desc 'Open an IRB console with the gem loaded'
+task :console do
+  sh 'irb -Ilib -rvalidates_hostname'
 end
 
-desc 'Test the validates_as_hostname gem/plugin.'
-Rake::TestTask.new(:test) do |t|
-  t.libs << 'lib'
-  t.pattern = 'test/*_test.rb'
-  t.verbose = true 
-end
-
-desc 'Default: run specs.'
-task :default => :spec
-
-desc "Run specs"
-RSpec::Core::RakeTask.new do |t|
-  t.pattern = "./spec/**/*_spec.rb" # don't need this, it's default.
-end
-
-desc 'Generate documentation for plugin.'
-Rake::RDocTask.new(:rdoc) do |rdoc|
-  rdoc.rdoc_dir = 'rdoc'
-  rdoc.title    = 'ValidatesHostname'
-  rdoc.rdoc_files.include('README.rdoc')
-  rdoc.rdoc_files.include('lib/**/*.rb')
-end
-
-Gem::PackageTask.new(spec) do |pkg|
-  pkg.gem_spec = spec
-end
-
-desc "Install the gem locally"
-task :install => [:package] do
-  sh %{gem install pkg/#{GEM_NAME}-#{GEM_VERSION}}
-end
-
-desc "Create a gemspec file"
-task :make_spec do
-  File.open("#{GEM_NAME}.gemspec", "w") do |file|
-    file.puts spec.to_ruby
-  end
-end
+# Note: The `build`, `install`, and `release` tasks are automatically provided
+# by `bundler/gem_tasks`. Run `rake -T` to see all available tasks.
