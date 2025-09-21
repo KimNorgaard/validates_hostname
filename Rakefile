@@ -24,6 +24,3 @@ desc 'Open an IRB console with the gem loaded'
 task :console do
   sh 'irb -Ilib -rvalidates_hostname'
 end
-
-# Note: The `build`, `install`, and `release` tasks are automatically provided
-# by `bundler/gem_tasks`. Run `rake -T` to see all available tasks.
