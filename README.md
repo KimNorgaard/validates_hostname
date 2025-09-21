@@ -20,6 +20,10 @@ As a gem:
 # in Gemfile
 gem 'validates_hostname', '~> 2.0'
 
+# Run bundler
+bundle install
+```
+
 ## Validations performed
 
 - maximum length of hostname is 255 characters
@@ -32,7 +36,8 @@ gem 'validates_hostname', '~> 2.0'
 
 - option to allow for underscores in hostname labels
 - option to require that the last label is a valid TLD (ie. require that the name is a FQDN)
-- option to allow numeric values in the first label of the hostname (exception: the hostname cannot consist of a single numeric label)
+- option to allow numeric values in the first label of the hostname (exception:
+  the hostname cannot consist of a single numeric label)
 - option to specify a list of valid TLDs
 - options to allow for wildcard hostname in first label (for use with DNS)
 
@@ -58,10 +63,13 @@ end
 
 ## Options and their defaults:
 
-- `:allow_underscore` => `false`
-- `:require_valid_tld` => `false`
-- `:valid_tlds` => Array of allowed TLDs (can only be used with `:require_fqdn` => `true`)
-- `:allow_numeric_hostname => false`
+| Option                | Default              | Description                                                                    |
+|-----------------------|--------------------- | ------------------------------------------------------------------------------ |
+| `allow_underscore`    | `false`              | Permits underscore characters (`_`) in hostname labels.                        |
+| `require_valid_tld`   | `false`              | Ensures that the hostname's last label is a recognized Top-Level Domain (TLD). |
+| `valid_tlds`          | `[]` (empty Array)   | An array of specific Top-Level Domains (TLDs) that are considered valid. This option requires `require_valid_tld` to be `true` to take effect. |
+| `allow_numeric_hostname` | `false`           | Allows hostname labels to consist solely of numeric digits (e.g., `123.example.com`). Note: A hostname cannot consist of a single numeric label (e.g., `123` is always invalid). |
+| `allow_wildcard_hostname` | `false`          | Permits a wildcard character (`*`) as the first label of the hostname (e.g., `*.example.com`). |
 
 ## Examples
 
@@ -151,17 +159,17 @@ A few extra validators are included.
 
 ### domainname
 
-- sets `require_valid_tld => true`
-- sets `allow_numeric_hostname => true`
+- sets `require_valid_tld` to `true`
+- sets `allow_numeric_hostname` to `true`
 - returns error if there is only one label and this label is numeric
 
 ### fqdn
 
-- sets `require_valid_tld => true`
+- sets `require_valid_tld` to `true`
 
 ### wildcard
 
-- sets `allow_wildcard_hostname => true`
+- sets `allow_wildcard_hostname` to `true`
 
 ## Error messages
 
