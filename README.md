@@ -1,5 +1,10 @@
 # ValidatesHostname
 
+[![Gem Version](https://badge.fury.io/rb/validates_hostname.svg)](https://badge.fury.io/rb/validates_hostname)
+[![CI](https://github.com/KimNorgaard/validates_hostname/actions/workflows/ci.yml/badge.svg)](https://github.com/KimNorgaard/validates_hostname/actions/workflows/ci.yml)
+[![Maintainability](https://api.codeclimate.com/v1/badges/your_badge_id/maintainability)](https://codeclimate.com/github/KimNorgaard/validates_hostname/maintainability)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/your_badge_id/test_coverage)](https://codeclimate.com/github/KimNorgaard/validates_hostname/test_coverage)
+
 - [Source](https://github.com/KimNorgaard/validates_hostname)
 - [Bugs](https://github.com/KimNorgaard/validates_hostname/issues)
 
@@ -40,6 +45,7 @@ bundle install
   the hostname cannot consist of a single numeric label)
 - option to specify a list of valid TLDs
 - options to allow for wildcard hostname in first label (for use with DNS)
+- option to allow for a trailing dot (root label) in the hostname
 
 See also http://www.zytrax.com/books/dns/apa/names.html
 
@@ -63,13 +69,14 @@ end
 
 ## Options and their defaults:
 
-| Option                | Default              | Description                                                                    |
-|-----------------------|--------------------- | ------------------------------------------------------------------------------ |
-| `allow_underscore`    | `false`              | Permits underscore characters (`_`) in hostname labels.                        |
-| `require_valid_tld`   | `false`              | Ensures that the hostname's last label is a recognized Top-Level Domain (TLD). |
-| `valid_tlds`          | `[]` (empty Array)   | An array of specific Top-Level Domains (TLDs) that are considered valid. This option requires `require_valid_tld` to be `true` to take effect. |
-| `allow_numeric_hostname` | `false`           | Allows hostname labels to consist solely of numeric digits (e.g., `123.example.com`). Note: A hostname cannot consist of a single numeric label (e.g., `123` is always invalid). |
-| `allow_wildcard_hostname` | `false`          | Permits a wildcard character (`*`) as the first label of the hostname (e.g., `*.example.com`). |
+| Option | Default | Description |
+|---|---|---|
+| `allow_underscore` | `false` | Permits underscore characters (`_`) in hostname labels. |
+| `require_valid_tld` | `false` | Ensures that the hostname's last label is a recognized Top-Level Domain (TLD). |
+| `valid_tlds` | List from `data/tlds.txt` | An array of specific Top-Level Domains (TLDs) that are considered valid. This option requires `require_valid_tld` to be `true` to take effect. |
+| `allow_numeric_hostname` | `false` | Allows hostname labels to consist solely of numeric digits (e.g., `123.example.com`). Note: A hostname cannot consist of a single numeric label (e.g., `123` is always invalid). |
+| `allow_wildcard_hostname` | `false` | Permits a wildcard character (`*`) as the first label of the hostname (e.g., `*.example.com`). |
+| `allow_root_label` | `false` | Permits a trailing dot (root label) in the hostname (e.g., `example.com.`). |
 
 ## Examples
 
@@ -153,6 +160,18 @@ end
 => true
 ```
 
+With `:allow_root_label`:
+
+```ruby
+class Record < ActiveRecord::Base
+  validates :name, hostname: { allow_root_label: true }
+end
+
+>> @record9 = Record.new(name: "example.com.")
+>> @record9.save
+=> true
+```
+
 ## Extra validators
 
 A few extra validators are included.
@@ -163,13 +182,51 @@ A few extra validators are included.
 - sets `allow_numeric_hostname` to `true`
 - returns error if there is only one label and this label is numeric
 
+```ruby
+class Record < ActiveRecord::Base
+  validates :name, domainname: true
+end
+
+>> @record = Record.new(name: "123.com")
+>> @record.save
+=> true
+
+>> @record2 = Record.new(name: "123")
+>> @record2.save
+=> false
+```
+
 ### fqdn
 
 - sets `require_valid_tld` to `true`
 
+```ruby
+class Record < ActiveRecord::Base
+  validates :name, fqdn: true
+end
+
+>> @record = Record.new(name: "example.com")
+>> @record.save
+=> true
+
+>> @record2 = Record.new(name: "example")
+>> @record2.save
+=> false
+```
+
 ### wildcard
 
 - sets `allow_wildcard_hostname` to `true`
+
+```ruby
+class Record < ActiveRecord::Base
+  validates :name, wildcard: true
+end
+
+>> @record = Record.new(name: "*.example.com")
+>> @record.save
+=> true
+```
 
 ## Error messages
 
@@ -179,13 +236,15 @@ Using the I18n system to define new defaults:
 en:
   errors:
     messages:
-      invalid_label_length: "label must be between 1 and 63 characters long"
-      label_begins_or_ends_with_hyphen: "label begins or ends with a hyphen"
+      invalid_hostname_length: "must be between 1 and 255 characters long"
+      invalid_label_length: "must be between 1 and 63 characters long"
+      label_begins_or_ends_with_hyphen: "begins or ends with hyphen"
+      label_contains_invalid_characters: "contains invalid characters (valid characters: [%{valid_chars}])"
       hostname_label_is_numeric: "unqualified hostname part cannot consist of numeric values only"
-      single_numeric_hostname_label: "hostnames cannot consist of a single numeric label"
-      label_contains_invalid_characters: "label contains invalid characters (valid characters: [%{valid_chars}])"
-      invalid_hostname_length: "hostname must be between 1 and 255 characters long"
-      tld_is_invalid: "tld of hostname is invalid"
+      hostname_is_not_fqdn: "is not a fully qualified domain name"
+      single_numeric_hostname_label: "cannot consist of a single numeric label"
+      hostname_contains_consecutive_dots: "must not contain consecutive dots"
+      hostname_ends_with_dot: "must not end with a dot"
 ```
 
 The `%{valid_chars}` signifies the range of valid characters allowed in labels.
@@ -198,4 +257,4 @@ It is highly recommended you use the I18n system for error messages.
 
 ## License
 
-Copyright (c) 2009-2025 Kim Norgaard, released under the MIT license.
+Copyright (c) 2009-2025 Kim Nørgaard, released under the MIT license.
