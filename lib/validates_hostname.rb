@@ -40,7 +40,28 @@ class HostnameValidator < ActiveModel::EachValidator
 
   def validate_each(record, attribute, value)
     value = value.to_s
+    labels = value.split('.')
 
+    validate_hostname_length(record, attribute, value)
+    # CHECK 1: hostname label cannot be longer than 63 characters
+    validate_label_length(record, attribute, labels)
+    # CHECK 2: hostname label cannot begin or end with hyphen
+    validate_label_hyphens(record, attribute, labels)
+    # CHECK 3: hostname can only contain valid characters
+    validate_label_characters(record, attribute, labels)
+    # CHECK 4: the unqualified hostname portion cannot consist of numeric values only
+    validate_numeric_hostname(record, attribute, labels)
+    # CHECK 5: TLD must be valid if required
+    handle_tld_validation(record, attribute, value, labels)
+    # CHECK 6: hostname may not contain consecutive dots
+    validate_consecutive_dots(record, attribute, value)
+    # CHECK 7: do not allow trailing dot unless option is set
+    validate_trailing_dot(record, attribute, value)
+  end
+
+  private
+
+  def validate_hostname_length(record, attribute, value)
     if value.length == 1 && value != '.'
       add_error(record, attribute, :invalid_hostname_length)
     end
@@ -49,51 +70,53 @@ class HostnameValidator < ActiveModel::EachValidator
     unless value.length.between?(1, 255)
       add_error(record, attribute, :invalid_hostname_length)
     end
+  end
 
-    return unless value.is_a?(String)
-
-    labels = value.split('.')
-    labels.each_with_index do |label, index|
-      # CHECK 1: hostname label cannot be longer than 63 characters
+  def validate_label_length(record, attribute, labels)
+    labels.each do |label|
       unless label.length.between?(1, 63)
         add_error(record, attribute, :invalid_label_length)
       end
+    end
+  end
 
-      # CHECK 2: hostname label cannot begin or end with hyphen
+  def validate_label_hyphens(record, attribute, labels)
+    labels.each do |label|
       if label.start_with?('-') || label.end_with?('-')
         add_error(record, attribute, :label_begins_or_ends_with_hyphen)
       end
+    end
+  end
 
+  def validate_label_characters(record, attribute, labels)
+    labels.each_with_index do |label, index|
       next if options[:allow_wildcard_hostname] && label == '*' && index.zero?
 
-      # CHECK 3: hostname can only contain valid characters
       valid_chars = 'a-z0-9\-'
       valid_chars += '_' if options[:allow_underscore]
       unless label.match?(/^[#{valid_chars}]+$/i)
         add_error(record, attribute, :label_contains_invalid_characters, valid_chars: valid_chars.delete('\\'))
       end
     end
+  end
 
-    # CHECK 4: the unqualified hostname portion cannot consist of numeric values only
+  def validate_numeric_hostname(record, attribute, labels)
     if !options[:allow_numeric_hostname] && !labels.empty? && labels.first.match?(/\A\d+\z/)
       add_error(record, attribute, :hostname_label_is_numeric)
     end
+  end
 
-    # CHECK 5: TLD must be valid if required
-    handle_tld_validation(record, attribute, value, labels)
-
-    # CHECK 6: hostname may not contain consecutive dots
+  def validate_consecutive_dots(record, attribute, value)
     if value.include?('..')
       add_error(record, attribute, :hostname_contains_consecutive_dots)
     end
+  end
 
-    # CHECK 7: do not allow trailing dot unless option is set
+  def validate_trailing_dot(record, attribute, value)
     if !options[:allow_root_label] && value.end_with?('.')
       add_error(record, attribute, :hostname_ends_with_dot)
     end
   end
-
-  private
 
   def handle_tld_validation(record, attribute, value, labels)
     require_valid_tld = options[:require_valid_tld]
