@@ -45,6 +45,20 @@ describe 'validates_hostname' do
     it_behaves_like 'an invalid hostname', '12345.com'
     it_behaves_like 'an invalid hostname', '*.example.com'
     it_behaves_like 'an invalid hostname', 'a'
+    it_behaves_like 'an invalid hostname', 'a' * 256
+  end
+
+  describe 'FQDN validation' do
+    before { test_class.validates :hostname, fqdn: true }
+
+    it_behaves_like 'a valid hostname', 'example.com'
+    it_behaves_like 'an invalid hostname', 'example'
+  end
+
+  describe 'Wildcard validation' do
+    before { test_class.validates :hostname, wildcard: true }
+
+    it_behaves_like 'a valid hostname', '*.example.com'
   end
 
   describe 'with allow_underscore: true' do
