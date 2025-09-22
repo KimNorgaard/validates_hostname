@@ -1,17 +1,18 @@
 # frozen_string_literal: true
 
 require 'active_model'
+require 'set'
 require_relative 'validates_hostname/version'
 
 # List from IANA: http://www.iana.org/domains/root/db/
 #                 http://data.iana.org/TLD/tlds-alpha-by-domain.txt
 tlds_file_path = File.expand_path('../data/tlds.txt', __dir__)
-ALLOWED_TLDS = File.readlines(tlds_file_path)
-                   .map(&:strip)
-                   .map(&:downcase)
-                   .reject { |line| line.start_with?('#') || line.empty? }
-                   .unshift('.')
-                   .freeze
+ALLOWED_TLDS = Set.new(File.readlines(tlds_file_path)
+                       .map(&:strip)
+                       .map(&:downcase)
+                       .reject { |line| line.start_with?('#') || line.empty? })
+                       .add('.')
+                       .freeze
 
 # Validates hostnames.
 class HostnameValidator < ActiveModel::EachValidator
