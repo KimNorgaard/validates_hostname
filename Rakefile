@@ -36,9 +36,7 @@ namespace :tlds do
     begin
       response = Net::HTTP.get(uri)
 
-      File.open('data/tlds.txt', 'w') do |f|
-        f.write(response)
-      end
+      File.write('data/tlds.txt', response)
 
       puts 'Successfully updated data/tlds.txt.'
     rescue StandardError => e

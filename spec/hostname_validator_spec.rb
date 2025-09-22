@@ -6,6 +6,7 @@ RSpec.describe HostnameValidator do
   let(:test_class) do
     Class.new do
       include ActiveModel::Validations
+
       attr_accessor :hostname
 
       # This is necessary for ActiveModel to work with an anonymous class

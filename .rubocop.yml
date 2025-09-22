@@ -1,8 +1,9 @@
-require:
+plugins:
   - rubocop-rake
   - rubocop-rspec
 
 AllCops:
+  NewCops: enable
   Exclude:
     - "bin/*"
     - "db/**/*"
@@ -30,5 +31,5 @@ Metrics/PerceivedComplexity:
 
 Metrics/BlockLength:
   Exclude:
-    - "spec/validates_hostname_spec.rb"
+    - "spec/hostname_validator_spec.rb"
     - "validates_hostname.gemspec"
