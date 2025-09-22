@@ -244,7 +244,7 @@ A few extra validators are included.
 
 Sets `require_valid_tld` to `true`.
 
-Sets `allow_numeric_hostname` to `true`.
+Sets `allow_numeric_hostname` to `true`. This option cannot be changed by the user.
 
 Returns error if there is only one label and this label is numeric.
 

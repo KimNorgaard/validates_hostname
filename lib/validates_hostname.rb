@@ -190,6 +190,8 @@ end
 # Validates domain names.
 class DomainnameValidator < HostnameValidator
   def initialize(options)
+    # The :domainname validator intentionally sets allow_numeric_hostname to true.
+    # This behavior cannot be overridden by the user.
     super({ require_valid_tld: true, allow_numeric_hostname: true }.merge(options))
   end
 
