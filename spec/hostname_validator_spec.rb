@@ -38,6 +38,7 @@ RSpec.describe HostnameValidator do
     it_behaves_like 'a valid hostname', 'example-hyphen.com'
     it_behaves_like 'a valid hostname', 'a'
     it_behaves_like 'a valid hostname', "#{'a' * 63}.com"
+    it_behaves_like 'a valid hostname', "#{'a' * 60}.#{'b' * 60}.#{'c' * 60}.#{'d' * 59}.com" # 245 chars total
 
     it 'is invalid with underscores' do
       record.hostname = '_example.com'
@@ -169,6 +170,28 @@ RSpec.describe HostnameValidator do
 
     it_behaves_like 'a valid hostname', '12345.com'
     it_behaves_like 'an invalid hostname', '12345'
+  end
+
+  describe 'with allow_blank: true' do
+    before { test_class.validates :hostname, hostname: { allow_blank: true } }
+
+    it_behaves_like 'a valid hostname', ''
+  end
+
+  describe 'with allow_nil: true' do
+    before { test_class.validates :hostname, hostname: { allow_nil: true } }
+
+    it_behaves_like 'a valid hostname', nil
+  end
+
+  describe 'with a custom message' do
+    before { test_class.validates :hostname, hostname: { message: 'is a custom message' } }
+
+    it 'returns the custom error message' do
+      record.hostname = '-example.com'
+      record.valid?
+      expect(record.errors[:hostname]).to include('is a custom message')
+    end
   end
 
   describe 'I18n' do
