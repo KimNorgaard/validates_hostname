@@ -27,6 +27,13 @@ class HostnameValidator < ActiveModel::EachValidator
     hostname_ends_with_dot:             'must not end with a dot'
   }.freeze
 
+  # @param [Hash] options
+  # @option options [Boolean] :allow_underscore (false) Allows underscores in hostname labels.
+  # @option options [Boolean] :require_valid_tld (false) Requires the hostname to have a valid TLD.
+  # @option options [Array<String>] :valid_tlds (ALLOWED_TLDS) A list of valid TLDs.
+  # @option options [Boolean] :allow_numeric_hostname (false) Allows numeric-only hostname labels.
+  # @option options [Boolean] :allow_wildcard_hostname (false) Allows wildcard hostnames.
+  # @option options [Boolean] :allow_root_label (false) Allows a trailing dot.
   def initialize(options)
     super({
       allow_underscore: false,
@@ -38,6 +45,11 @@ class HostnameValidator < ActiveModel::EachValidator
     }.merge(options))
   end
 
+  # Validates the hostname.
+  #
+  # @param [ActiveModel::Base] record The record to validate.
+  # @param [Symbol] attribute The attribute to validate.
+  # @param [String] value The value to validate.
   def validate_each(record, attribute, value)
     value = value.to_s
     labels = value.split('.')
@@ -61,6 +73,11 @@ class HostnameValidator < ActiveModel::EachValidator
 
   private
 
+  # Validates the length of the hostname.
+  #
+  # @param [ActiveModel::Base] record The record to validate.
+  # @param [Symbol] attribute The attribute to validate.
+  # @param [String] value The value to validate.
   def validate_hostname_length(record, attribute, value)
     if value.length == 1 && value != '.'
       add_error(record, attribute, :invalid_hostname_length)
@@ -72,6 +89,11 @@ class HostnameValidator < ActiveModel::EachValidator
     end
   end
 
+  # Validates the length of each label in the hostname.
+  #
+  # @param [ActiveModel::Base] record The record to validate.
+  # @param [Symbol] attribute The attribute to validate.
+  # @param [Array<String>] labels The labels to validate.
   def validate_label_length(record, attribute, labels)
     labels.each do |label|
       unless label.length.between?(1, 63)
@@ -80,6 +102,11 @@ class HostnameValidator < ActiveModel::EachValidator
     end
   end
 
+  # Validates that no label begins or ends with a hyphen.
+  #
+  # @param [ActiveModel::Base] record The record to validate.
+  # @param [Symbol] attribute The attribute to validate.
+  # @param [Array<String>] labels The labels to validate.
   def validate_label_hyphens(record, attribute, labels)
     labels.each do |label|
       if label.start_with?('-') || label.end_with?('-')
@@ -88,6 +115,11 @@ class HostnameValidator < ActiveModel::EachValidator
     end
   end
 
+  # Validates the characters in each label of the hostname.
+  #
+  # @param [ActiveModel::Base] record The record to validate.
+  # @param [Symbol] attribute The attribute to validate.
+  # @param [Array<String>] labels The labels to validate.
   def validate_label_characters(record, attribute, labels)
     labels.each_with_index do |label, index|
       next if options[:allow_wildcard_hostname] && label == '*' && index.zero?
@@ -100,24 +132,45 @@ class HostnameValidator < ActiveModel::EachValidator
     end
   end
 
+  # Validates that the hostname is not numeric.
+  #
+  # @param [ActiveModel::Base] record The record to validate.
+  # @param [Symbol] attribute The attribute to validate.
+  # @param [Array<String>] labels The labels to validate.
   def validate_numeric_hostname(record, attribute, labels)
     if !options[:allow_numeric_hostname] && !labels.empty? && labels.first.match?(/\A\d+\z/)
       add_error(record, attribute, :hostname_label_is_numeric)
     end
   end
 
+  # Validates that the hostname does not contain consecutive dots.
+  #
+  # @param [ActiveModel::Base] record The record to validate.
+  # @param [Symbol] attribute The attribute to validate.
+  # @param [String] value The value to validate.
   def validate_consecutive_dots(record, attribute, value)
     if value.include?('..')
       add_error(record, attribute, :hostname_contains_consecutive_dots)
     end
   end
 
+  # Validates that the hostname does not end with a dot.
+  #
+  # @param [ActiveModel::Base] record The record to validate.
+  # @param [Symbol] attribute The attribute to validate.
+  # @param [String] value The value to validate.
   def validate_trailing_dot(record, attribute, value)
     if !options[:allow_root_label] && value.end_with?('.')
       add_error(record, attribute, :hostname_ends_with_dot)
     end
   end
 
+  # Handles the TLD validation.
+  #
+  # @param [ActiveModel::Base] record The record to validate.
+  # @param [Symbol] attribute The attribute to validate.
+  # @param [String] value The value to validate.
+  # @param [Array<String>] labels The labels to validate.
   def handle_tld_validation(record, attribute, value, labels)
     require_valid_tld = options[:require_valid_tld]
     require_valid_tld = record.send(require_valid_tld) if require_valid_tld.is_a?(Symbol)
@@ -130,6 +183,12 @@ class HostnameValidator < ActiveModel::EachValidator
     add_error(record, attribute, :hostname_is_not_fqdn)
   end
 
+  # Adds an error to the record.
+  #
+  # @param [ActiveModel::Base] record The record to add the error to.
+  # @param [Symbol] attr_name The attribute to add the error to.
+  # @param [Symbol] message The error message.
+  # @param [Hash] interpolators The interpolators for the error message.
   def add_error(record, attr_name, message, interpolators = {})
     args = {
       default: [options[:message], DEFAULT_ERROR_MESSAGES[message]].compact,
