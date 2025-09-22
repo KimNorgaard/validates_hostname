@@ -18,6 +18,6 @@ Gem::Specification.new do |s|
   s.licenses = ['MIT']
   s.summary = 'Checks for valid hostnames'
 
-  s.add_dependency('activemodel', [' >= 6.0', '< 8'])
+  s.add_dependency('activemodel', ['>= 6.0', '< 8'])
   s.metadata['rubygems_mfa_required'] = 'true'
 end
