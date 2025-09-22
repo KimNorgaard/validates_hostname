@@ -1,0 +1,12 @@
+fr:
+  errors:
+    messages:
+      invalid_hostname_length: "doit avoir entre 1 et 255 caractères"
+      invalid_label_length: "doit avoir entre 1 et 63 caractères"
+      label_begins_or_ends_with_hyphen: "commence ou se termine par un trait d'union"
+      label_contains_invalid_characters: "contient des caractères non valides (caractères valides: [%{valid_chars}])"
+      hostname_label_is_numeric: "la partie non qualifiée du nom d'hôte ne peut pas être constituée uniquement de valeurs numériques"
+      hostname_is_not_fqdn: "n'est pas un nom de domaine complet"
+      single_numeric_hostname_label: "ne peut pas consister en une seule étiquette numérique"
+      hostname_contains_consecutive_dots: "ne doit pas contenir de points consécutifs"
+      hostname_ends_with_dot: "ne doit pas se terminer par un point"
