@@ -2,15 +2,15 @@
 
 [![Gem Version](https://badge.fury.io/rb/validates_hostname.svg)](https://badge.fury.io/rb/validates_hostname)
 [![CI](https://github.com/KimNorgaard/validates_hostname/actions/workflows/ci.yml/badge.svg)](https://github.com/KimNorgaard/validates_hostname/actions/workflows/ci.yml)
-[![Maintainability](https://api.codeclimate.com/v1/badges/your_badge_id/maintainability)](https://codeclimate.com/github/KimNorgaard/validates_hostname/maintainability)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/your_badge_id/test_coverage)](https://codeclimate.com/github/KimNorgaard/validates_hostname/test_coverage)
-
-- [Source](https://github.com/KimNorgaard/validates_hostname)
-- [Bugs](https://github.com/KimNorgaard/validates_hostname/issues)
 
 ## Description
 
 Extension to ActiveModel for validating hostnames and domain names.
+
+## Requirements
+
+- Ruby >= 3.0.0
+- Active Model >= 6.0
 
 ## Features
 
@@ -29,32 +29,42 @@ gem 'validates_hostname', '~> 2.0'
 bundle install
 ```
 
-## Validations performed
+## Validations Performed
 
-- maximum length of hostname is 255 characters
-- maximum length of each hostname label is 63 characters
-- characters allowed in hostname labels are a-z, A-Z, 0-9 and hyphen
-- labels do not begin or end with a hyphen
-- labels do not consist of numeric values only
+The following validations are performed on the hostname:
+
+- The maximum length of the hostname is 255 characters.
+- The maximum length of each hostname label is 63 characters.
+- The allowed characters in hostname labels are `a-z`, `A-Z`, `0-9` and hyphen (`-`).
+- Labels do not begin or end with a hyphen.
+- Labels do not consist of numeric values only.
 
 ## Options
 
-- option to allow for underscores in hostname labels
-- option to require that the last label is a valid TLD (ie. require that the name is a FQDN)
-- option to allow numeric values in the first label of the hostname (exception:
-  the hostname cannot consist of a single numeric label)
-- option to specify a list of valid TLDs
-- options to allow for wildcard hostname in first label (for use with DNS)
-- option to allow for a trailing dot (root label) in the hostname
+The validator can be configured with the following options:
+
+- `allow_underscore`: Allows for underscores in hostname labels.
+- `require_valid_tld`: Requires that the last label is a valid TLD.
+- `valid_tlds`: A list of valid TLDs. This option requires `require_valid_tld` to be `true`.
+- `allow_numeric_hostname`: Allows numeric values in the first label of the hostname.
+- `allow_wildcard_hostname`: Allows for a wildcard hostname in the first label.
+- `allow_root_label`: Allows for a trailing dot (root label) in the hostname.
 
 See also http://www.zytrax.com/books/dns/apa/names.html
 
-## How to use
+## How to Use
 
 Simple usage:
 
 ```ruby
-class Record < ActiveRecord::Base
+class Record
+  include ActiveModel::Validations
+  attr_accessor :name
+
+  def self.model_name
+    ActiveModel::Name.new(self, nil, "Record")
+  end
+
   validates :name, hostname: true
 end
 ```
@@ -62,28 +72,40 @@ end
 With options:
 
 ```ruby
-class Record < ActiveRecord::Base
-  validates :name, hostname: { OPTIONS }
+class Record
+  include ActiveModel::Validations
+  attr_accessor :name
+
+  def self.model_name
+    ActiveModel::Name.new(self, nil, "Record")
+  end
+
+  validates :name, hostname: { allow_underscore: true }
 end
 ```
 
-## Options and their defaults:
+## Options and Their Defaults
 
-| Option | Default | Description |
-|---|---|---|
-| `allow_underscore` | `false` | Permits underscore characters (`_`) in hostname labels. |
-| `require_valid_tld` | `false` | Ensures that the hostname's last label is a recognized Top-Level Domain (TLD). |
-| `valid_tlds` | List from `data/tlds.txt` | An array of specific Top-Level Domains (TLDs) that are considered valid. This option requires `require_valid_tld` to be `true` to take effect. |
-| `allow_numeric_hostname` | `false` | Allows hostname labels to consist solely of numeric digits (e.g., `123.example.com`). Note: A hostname cannot consist of a single numeric label (e.g., `123` is always invalid). |
-| `allow_wildcard_hostname` | `false` | Permits a wildcard character (`*`) as the first label of the hostname (e.g., `*.example.com`). |
-| `allow_root_label` | `false` | Permits a trailing dot (root label) in the hostname (e.g., `example.com.`). |
+- `allow_underscore`: Permits underscore characters (`_`) in hostname labels. (default: `false`)
+- `require_valid_tld`: Ensures that the hostname's last label is a recognized Top-Level Domain (TLD). (default: `false`)
+- `valid_tlds`: An array of specific Top-Level Domains (TLDs) that are considered valid. This option requires `require_valid_tld` to be `true` to take effect. (default: List from `data/tlds.txt`)
+- `allow_numeric_hostname`: Allows hostname labels to consist solely of numeric digits (e.g., `123.example.com`). Note: A hostname cannot consist of a single numeric label (e.g., `123` is always invalid). (default: `false`)
+- `allow_wildcard_hostname`: Permits a wildcard character (`*`) as the first label of the hostname (e.g., `*.example.com`). (default: `false`)
+- `allow_root_label`: Permits a trailing dot (root label) in the hostname (e.g., `example.com.`). (default: `false`)
 
 ## Examples
 
 Without options:
 
 ```ruby
-class Record < ActiveRecord::Base
+class Record
+  include ActiveModel::Validations
+  attr_accessor :name
+
+  def self.model_name
+    ActiveModel::Name.new(self, nil, "Record")
+  end
+
   validates :name, hostname: true
 end
 
@@ -99,7 +121,14 @@ end
 With `:allow_underscore`:
 
 ```ruby
-class Record < ActiveRecord::Base
+class Record
+  include ActiveModel::Validations
+  attr_accessor :name
+
+  def self.model_name
+    ActiveModel::Name.new(self, nil, "Record")
+  end
+
   validates :name, hostname: { allow_underscore: true }
 end
 
@@ -111,7 +140,14 @@ end
 With `:require_valid_tld`:
 
 ```ruby
-class Record < ActiveRecord::Base
+class Record
+  include ActiveModel::Validations
+  attr_accessor :name
+
+  def self.model_name
+    ActiveModel::Name.new(self, nil, "Record")
+  end
+
   validates :name, hostname: { require_valid_tld: true }
 end
 
@@ -127,7 +163,14 @@ end
 With `:valid_tlds`:
 
 ```ruby
-class Record < ActiveRecord::Base
+class Record
+  include ActiveModel::Validations
+  attr_accessor :name
+
+  def self.model_name
+    ActiveModel::Name.new(self, nil, "Record")
+  end
+
   validates :name, hostname: { require_valid_tld: true, valid_tlds: %w(com org net) }
 end
 
@@ -139,7 +182,14 @@ end
 With `:allow_numeric_hostname`:
 
 ```ruby
-class Record < ActiveRecord::Base
+class Record
+  include ActiveModel::Validations
+  attr_accessor :name
+
+  def self.model_name
+    ActiveModel::Name.new(self, nil, "Record")
+  end
+
   validates :name, hostname: { allow_numeric_hostname: false }
 end
 
@@ -151,7 +201,14 @@ end
 With `:allow_wildcard_hostname`:
 
 ```ruby
-class Record < ActiveRecord::Base
+class Record
+  include ActiveModel::Validations
+  attr_accessor :name
+
+  def self.model_name
+    ActiveModel::Name.new(self, nil, "Record")
+  end
+
   validates :name, hostname: { allow_wildcard_hostname: true }
 end
 
@@ -163,7 +220,14 @@ end
 With `:allow_root_label`:
 
 ```ruby
-class Record < ActiveRecord::Base
+class Record
+  include ActiveModel::Validations
+  attr_accessor :name
+
+  def self.model_name
+    ActiveModel::Name.new(self, nil, "Record")
+  end
+
   validates :name, hostname: { allow_root_label: true }
 end
 
@@ -172,18 +236,27 @@ end
 => true
 ```
 
-## Extra validators
+## Extra Validators
 
 A few extra validators are included.
 
 ### domainname
 
-- sets `require_valid_tld` to `true`
-- sets `allow_numeric_hostname` to `true`
-- returns error if there is only one label and this label is numeric
+Sets `require_valid_tld` to `true`.
+
+Sets `allow_numeric_hostname` to `true`.
+
+Returns error if there is only one label and this label is numeric.
 
 ```ruby
-class Record < ActiveRecord::Base
+class Record
+  include ActiveModel::Validations
+  attr_accessor :name
+
+  def self.model_name
+    ActiveModel::Name.new(self, nil, "Record")
+  end
+
   validates :name, domainname: true
 end
 
@@ -198,10 +271,17 @@ end
 
 ### fqdn
 
-- sets `require_valid_tld` to `true`
+Sets `require_valid_tld` to `true`.
 
 ```ruby
-class Record < ActiveRecord::Base
+class Record
+  include ActiveModel::Validations
+  attr_accessor :name
+
+  def self.model_name
+    ActiveModel::Name.new(self, nil, "Record")
+  end
+
   validates :name, fqdn: true
 end
 
@@ -216,10 +296,17 @@ end
 
 ### wildcard
 
-- sets `allow_wildcard_hostname` to `true`
+Sets `allow_wildcard_hostname` to `true`.
 
 ```ruby
-class Record < ActiveRecord::Base
+class Record
+  include ActiveModel::Validations
+  attr_accessor :name
+
+  def self.model_name
+    ActiveModel::Name.new(self, nil, "Record")
+  end
+
   validates :name, wildcard: true
 end
 
@@ -228,28 +315,30 @@ end
 => true
 ```
 
-## Error messages
+## Error Messages
 
-Using the I18n system to define new defaults:
+The gem uses the I18n system for error messages. You can provide your own
+translations in your application's locale files (e.g., `config/locales/en.yml`).
+
+Example of a custom error message in `config/locales/en.yml`:
 
 ```yaml
 en:
   errors:
     messages:
-      invalid_hostname_length: "must be between 1 and 255 characters long"
-      invalid_label_length: "must be between 1 and 63 characters long"
-      label_begins_or_ends_with_hyphen: "begins or ends with hyphen"
-      label_contains_invalid_characters: "contains invalid characters (valid characters: [%{valid_chars}])"
-      hostname_label_is_numeric: "unqualified hostname part cannot consist of numeric values only"
-      hostname_is_not_fqdn: "is not a fully qualified domain name"
-      single_numeric_hostname_label: "cannot consist of a single numeric label"
-      hostname_contains_consecutive_dots: "must not contain consecutive dots"
-      hostname_ends_with_dot: "must not end with a dot"
+      invalid_hostname_length: "is not a valid hostname length"
 ```
 
-The `%{valid_chars}` signifies the range of valid characters allowed in labels.
+The gem comes with the following built-in translations:
 
-It is highly recommended you use the I18n system for error messages.
+- English (en)
+- Spanish (es)
+- German (de)
+- French (fr)
+- Simplified Chinese (zh)
+
+The `%{valid_chars}` interpolator is available for the
+`label_contains_invalid_characters` message.
 
 ## Maintainers
 
