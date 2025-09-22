@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-describe 'validates_hostname' do
+RSpec.describe 'validates_hostname' do
   let(:test_class) do
     Class.new do
       include ActiveModel::Validations
