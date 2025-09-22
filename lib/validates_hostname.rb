@@ -5,6 +5,7 @@ require 'set'
 require_relative 'validates_hostname/version'
 
 module ValidatesHostname
+  # Handles TLD list loading and management.
   module Tld
     # List from IANA: http://www.iana.org/domains/root/db/
     #                 http://data.iana.org/TLD/tlds-alpha-by-domain.txt
@@ -14,8 +15,8 @@ module ValidatesHostname
               .map(&:strip)
               .map(&:downcase)
               .reject { |line| line.start_with?('#') || line.empty? })
-        .add('.')
-        .freeze
+         .add('.')
+         .freeze
     end
 
     ALLOWED_TLDS = load_tlds
@@ -24,10 +25,8 @@ end
 
 ALLOWED_TLDS = ValidatesHostname::Tld::ALLOWED_TLDS
 
-
 # Validates hostnames.
 class HostnameValidator < ActiveModel::EachValidator
-
   # @param [Hash] options
   # @option options [Boolean] :allow_underscore (false) Allows underscores in hostname labels.
   # @option options [Boolean] :require_valid_tld (false) Requires the hostname to have a valid TLD.
@@ -81,9 +80,9 @@ class HostnameValidator < ActiveModel::EachValidator
   # @param [String] value The value to validate.
   def validate_hostname_length(record, attribute, value)
     # maximum hostname length: 255 characters
-    unless value.length.between?(1, 255)
-      add_error(record, attribute, :invalid_hostname_length)
-    end
+    return if value.length.between?(1, 255)
+
+    add_error(record, attribute, :invalid_hostname_length)
   end
 
   # Validates the length of each label in the hostname.
@@ -93,9 +92,7 @@ class HostnameValidator < ActiveModel::EachValidator
   # @param [Array<String>] labels The labels to validate.
   def validate_label_length(record, attribute, labels)
     labels.each do |label|
-      unless label.length.between?(1, 63)
-        add_error(record, attribute, :invalid_label_length)
-      end
+      add_error(record, attribute, :invalid_label_length) unless label.length.between?(1, 63)
     end
   end
 
@@ -106,9 +103,7 @@ class HostnameValidator < ActiveModel::EachValidator
   # @param [Array<String>] labels The labels to validate.
   def validate_label_hyphens(record, attribute, labels)
     labels.each do |label|
-      if label.start_with?('-') || label.end_with?('-')
-        add_error(record, attribute, :label_begins_or_ends_with_hyphen)
-      end
+      add_error(record, attribute, :label_begins_or_ends_with_hyphen) if label.start_with?('-') || label.end_with?('-')
     end
   end
 
@@ -135,9 +130,9 @@ class HostnameValidator < ActiveModel::EachValidator
   # @param [Symbol] attribute The attribute to validate.
   # @param [Array<String>] labels The labels to validate.
   def validate_numeric_hostname(record, attribute, labels)
-    if !options[:allow_numeric_hostname] && !labels.empty? && labels.first.match?(/\A\d+\z/)
-      add_error(record, attribute, :hostname_label_is_numeric)
-    end
+    return unless !options[:allow_numeric_hostname] && !labels.empty? && labels.first.match?(/\A\d+\z/)
+
+    add_error(record, attribute, :hostname_label_is_numeric)
   end
 
   # Validates that the hostname does not contain consecutive dots.
@@ -146,9 +141,9 @@ class HostnameValidator < ActiveModel::EachValidator
   # @param [Symbol] attribute The attribute to validate.
   # @param [String] value The value to validate.
   def validate_consecutive_dots(record, attribute, value)
-    if value.include?('..')
-      add_error(record, attribute, :hostname_contains_consecutive_dots)
-    end
+    return unless value.include?('..')
+
+    add_error(record, attribute, :hostname_contains_consecutive_dots)
   end
 
   # Validates that the hostname does not end with a dot.
@@ -157,9 +152,9 @@ class HostnameValidator < ActiveModel::EachValidator
   # @param [Symbol] attribute The attribute to validate.
   # @param [String] value The value to validate.
   def validate_trailing_dot(record, attribute, value)
-    if !options[:allow_root_label] && value.end_with?('.')
-      add_error(record, attribute, :hostname_ends_with_dot)
-    end
+    return unless !options[:allow_root_label] && value.end_with?('.')
+
+    add_error(record, attribute, :hostname_ends_with_dot)
   end
 
   # Handles the TLD validation.
@@ -209,9 +204,9 @@ class DomainnameValidator < HostnameValidator
 
     labels = value.split('.')
     # CHECK 1: if there is only one label it cannot be numeric
-    if labels.first.match?(/\A\d+\z/) && labels.size == 1
-      add_error(record, attribute, :single_numeric_hostname_label)
-    end
+    return unless labels.first.match?(/\A\d+\z/) && labels.size == 1
+
+    add_error(record, attribute, :single_numeric_hostname_label)
   end
 end
 
@@ -231,9 +226,10 @@ end
 
 if defined?(Rails)
   module ValidatesHostname
+    # Railtie to automatically load I18n translations.
     class Railtie < Rails::Railtie
       initializer 'validates_hostname.i18n' do
-        I18n.load_path += Dir[File.expand_path("../config/locales/*.yml", __dir__)]
+        I18n.load_path += Dir[File.expand_path('../config/locales/*.yml', __dir__)]
       end
     end
   end

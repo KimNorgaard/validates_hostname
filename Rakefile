@@ -40,10 +40,9 @@ namespace :tlds do
         f.write(response)
       end
 
-      puts "Successfully updated data/tlds.txt."
-
-    rescue => e
-      $stderr.puts "An error occurred during TLD update: #{e.message}"
+      puts 'Successfully updated data/tlds.txt.'
+    rescue StandardError => e
+      warn "An error occurred during TLD update: #{e.message}"
       exit 1
     end
   end

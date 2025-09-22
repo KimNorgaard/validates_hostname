@@ -2,7 +2,7 @@
 
 require 'spec_helper'
 
-RSpec.describe 'validates_hostname' do
+RSpec.describe HostnameValidator do
   let(:test_class) do
     Class.new do
       include ActiveModel::Validations
@@ -10,7 +10,7 @@ RSpec.describe 'validates_hostname' do
 
       # This is necessary for ActiveModel to work with an anonymous class
       def self.model_name
-        ActiveModel::Name.new(self, nil, "TestModel")
+        ActiveModel::Name.new(self, nil, 'TestModel')
       end
     end
   end

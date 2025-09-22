@@ -23,20 +23,24 @@ Gem::Specification.new do |s|
 
   if s.respond_to? :add_runtime_dependency
     s.add_runtime_dependency('activemodel', [' >= 6.0', '< 8'])
+    s.add_development_dependency('guard', ['~> 2.19'])
+    s.add_development_dependency('guard-rspec', ['~> 4.7'])
     s.add_development_dependency('rake', ['~> 13.0'])
     s.add_development_dependency('rspec', ['~> 3.13'])
     s.add_development_dependency('rspec-collection_matchers', ['~> 1.2'])
     s.add_development_dependency('rubocop', ['~> 1.80'])
-    s.add_development_dependency('guard', ['~> 2.19'])
-    s.add_development_dependency('guard-rspec', ['~> 4.7'])
+    s.add_development_dependency('rubocop-rake', ['~> 0.7'])
+    s.add_development_dependency('rubocop-rspec', ['~> 3.7'])
     s.add_development_dependency('simplecov', ['~> 0.21'])
   else
     s.add_dependency('activemodel', ['>= 6.0', '< 8'])
+    s.add_dependency('guard', ['~> 2.19'])
+    s.add_dependency('guard-rspec', ['~> 4.7'])
     s.add_dependency('rake', ['~> 13.0'])
     s.add_dependency('rspec', ['~> 3.13'])
     s.add_dependency('rspec-collection_matchers', ['~> 1.2'])
     s.add_dependency('rubocop', ['~> 1.80'])
-    s.add_dependency('guard', ['~> 2.19'])
-    s.add_dependency('guard-rspec', ['~> 4.7'])
+    s.add_dependency('rubocop-rake', ['~> 0.7'])
+    s.add_dependency('rubocop-rspec', ['~> 3.7'])
   end
 end

@@ -1,4 +1,6 @@
-guard :rspec, cmd: "rbenv exec bundle exec rspec" do
+# frozen_string_literal: true
+
+guard :rspec, cmd: 'rbenv exec bundle exec rspec' do
   # Watch spec files
   watch(%r{^spec/.+_spec\.rb$})
 
@@ -6,5 +8,5 @@ guard :rspec, cmd: "rbenv exec bundle exec rspec" do
   watch(%r{^lib/(.+)\.rb$}) { |m| "spec/#{m[1]}_spec.rb" }
 
   # Watch the spec_helper and run all specs
-  watch('spec/spec_helper.rb') { "spec" }
+  watch('spec/spec_helper.rb') { 'spec' }
 end
