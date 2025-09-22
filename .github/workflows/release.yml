@@ -1,51 +1,37 @@
 name: Release
 
 on:
-  workflow_dispatch:
+  push:
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+*"
 
 jobs:
   release:
+    name: Release to RubyGems.org
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
-        with:
-          token: ${{ secrets.GH_PAT }}
 
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
           ruby-version: ".ruby-version"
-          bundler-cache: true
 
-      - name: Update TLD list from IANA
-        id: update_tlds
-        run: bundle exec rake tlds:update
-
-      - name: Check for changes in TLD list
-        id: git_diff
+      - name: Configure RubyGems Credentials
         run: |
-          git diff --quiet data/tlds.txt || echo "changed=true" >> $GITHUB_OUTPUT
-
-      - name: Run tests and linters
-        if: steps.git_diff.outputs.changed == 'true'
-        run: bundle exec rake ci
-
-      - name: Configure Git
-        if: steps.git_diff.outputs.changed == 'true'
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-      - name: Commit and push TLD update
-        if: steps.git_diff.outputs.changed == 'true'
-        run: |
-          git add data/tlds.txt
-          git commit -m "chore: Update TLD list from IANA"
-          git push
-
-      - name: Release Gem to RubyGems.org
-        if: steps.git_diff.outputs.changed == 'true'
+          mkdir -p $HOME/.gem
+          touch $HOME/.gem/credentials
+          chmod 0600 $HOME/.gem/credentials
+          printf -- "---\n:rubygems_api_key: ${GEM_HOST_API_KEY}\n" > $HOME/.gem/credentials
         env:
           GEM_HOST_API_KEY: ${{ secrets.RUBYGEMS_API_KEY }}
-        run: bundle exec rake release
+
+      - name: Build gem
+        run: gem build *.gemspec
+
+      - name: Push gem to RubyGems.org
+        run: gem push *.gem

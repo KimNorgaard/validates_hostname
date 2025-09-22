@@ -1,0 +1,59 @@
+name: Automated TLD Update and Release
+
+on:
+  schedule:
+    - cron: "0 0 * * 0"
+  workflow_dispatch:
+
+jobs:
+  update_and_release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+        with:
+          token: ${{ secrets.GH_PAT }}
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ".ruby-version"
+          bundler-cache: true
+
+      - name: Update TLD list from IANA
+        run: bundle exec rake tlds:update
+
+      - name: Check for changes
+        id: git_diff
+        run: |
+          git diff --quiet data/tlds.txt || echo "changed=true" >> $GITHUB_OUTPUT
+
+      - name: Configure Git
+        if: steps.git_diff.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Bump version and push changes
+        if: steps.git_diff.outputs.changed == 'true'
+        run: |
+          # Extract the current version string, e.g., '2.0.0'
+          current_version=$(grep -oP "VERSION = '\K[^']+" lib/validates_hostname/version.rb)
+          echo "Current version: $current_version"
+
+          # Bump the patch version using Ruby
+          new_version=$(ruby -e "v = '$current_version'.split('.'); v[-1] = v[-1].to_i + 1; puts v.join('.')")
+          echo "New version: $new_version"
+
+          # Update the version file
+          sed -i "s/VERSION = '$current_version'/VERSION = '$new_version'/" lib/validates_hostname/version.rb
+
+          # Commit the changes
+          git add data/tlds.txt lib/validates_hostname/version.rb
+          git commit -m "chore: Update TLD list and bump version to v${new_version}" -m "This is an automated commit."
+
+          # Tag the new version
+          git tag "v${new_version}"
+
+          # Push the commit and the tag, triggering the release workflow
+          git push origin main --follow-tags
