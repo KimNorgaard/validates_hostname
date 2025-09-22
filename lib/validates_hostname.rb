@@ -182,10 +182,10 @@ class HostnameValidator < ActiveModel::EachValidator
   # @param [Symbol] message The error message.
   # @param [Hash] interpolators The interpolators for the error message.
   def add_error(record, attr_name, message, interpolators = {})
-    args = {
-      scope: %i[errors messages]
-    }.merge(interpolators)
-    record.errors.add(attr_name, I18n.t(message, **args))
+    # Use the custom message if provided in the options, otherwise use the
+    # symbolic message key for I18n lookup.
+    custom_message = options[:message]
+    record.errors.add(attr_name, custom_message || message, **interpolators)
   end
 end
 
