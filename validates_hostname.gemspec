@@ -30,6 +30,7 @@ Gem::Specification.new do |s|
     s.add_development_dependency('rubocop', ['~> 1.80'])
     s.add_development_dependency('guard', ['~> 2.19'])
     s.add_development_dependency('guard-rspec', ['~> 4.7'])
+    s.add_development_dependency('simplecov', ['~> 0.21'])
   else
     s.add_dependency('activemodel', ['>= 6.0', '< 8'])
     s.add_dependency('activesupport', ['>= 6.0', '< 8'])

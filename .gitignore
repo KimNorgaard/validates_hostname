@@ -12,3 +12,7 @@ Gemfile.lock
 /.yardoc/
 /doc/
 /rdoc/
+
+/.rspec_status
+coverage
+/
