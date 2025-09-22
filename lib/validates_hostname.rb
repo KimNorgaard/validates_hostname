@@ -4,15 +4,26 @@ require 'active_model'
 require 'set'
 require_relative 'validates_hostname/version'
 
-# List from IANA: http://www.iana.org/domains/root/db/
-#                 http://data.iana.org/TLD/tlds-alpha-by-domain.txt
-tlds_file_path = File.expand_path('../data/tlds.txt', __dir__)
-ALLOWED_TLDS = Set.new(File.readlines(tlds_file_path)
-                       .map(&:strip)
-                       .map(&:downcase)
-                       .reject { |line| line.start_with?('#') || line.empty? })
-                       .add('.')
-                       .freeze
+module ValidatesHostname
+  module Tld
+    # List from IANA: http://www.iana.org/domains/root/db/
+    #                 http://data.iana.org/TLD/tlds-alpha-by-domain.txt
+    def self.load_tlds
+      tlds_file_path = File.expand_path('../data/tlds.txt', __dir__)
+      Set.new(File.readlines(tlds_file_path)
+              .map(&:strip)
+              .map(&:downcase)
+              .reject { |line| line.start_with?('#') || line.empty? })
+        .add('.')
+        .freeze
+    end
+
+    ALLOWED_TLDS = load_tlds
+  end
+end
+
+ALLOWED_TLDS = ValidatesHostname::Tld::ALLOWED_TLDS
+
 
 # Validates hostnames.
 class HostnameValidator < ActiveModel::EachValidator
