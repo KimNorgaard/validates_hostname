@@ -36,27 +36,90 @@ RSpec.describe HostnameValidator do
 
     it_behaves_like 'a valid hostname', 'example.com'
     it_behaves_like 'a valid hostname', 'example-hyphen.com'
-
-    it_behaves_like 'an invalid hostname', '_example.com'
-    it_behaves_like 'an invalid hostname', 'example-.com'
-    it_behaves_like 'an invalid hostname', '-example.com'
-    it_behaves_like 'an invalid hostname', 'example..com'
-    it_behaves_like 'an invalid hostname', 'example.com.'
-    it_behaves_like 'an invalid hostname', '12345.com'
-    it_behaves_like 'an invalid hostname', '*.example.com'
     it_behaves_like 'a valid hostname', 'a'
-    it_behaves_like 'an invalid hostname', 'a' * 256
-    it_behaves_like 'an invalid hostname', ' example.com'
+    it_behaves_like 'a valid hostname', "#{'a' * 63}.com"
+
+    it 'is invalid with underscores' do
+      record.hostname = '_example.com'
+      expect(record).to be_invalid
+    end
+
+    it 'is invalid if a label ends with a hyphen' do
+      record.hostname = 'example-.com'
+      expect(record).to be_invalid
+    end
+
+    it 'is invalid if a label begins with a hyphen' do
+      record.hostname = '-example.com'
+      expect(record).to be_invalid
+    end
+
+    it 'is invalid with consecutive dots' do
+      record.hostname = 'example..com'
+      expect(record).to be_invalid
+    end
+
+    it 'is invalid with a trailing dot' do
+      record.hostname = 'example.com.'
+      expect(record).to be_invalid
+    end
+
+    it 'is invalid with a numeric-only label' do
+      record.hostname = '12345.com'
+      expect(record).to be_invalid
+    end
+
+    it 'is invalid with a wildcard' do
+      record.hostname = '*.example.com'
+      expect(record).to be_invalid
+    end
+
+    it 'is invalid if it is too long (256 chars)' do
+      record.hostname = 'a' * 256
+      expect(record).to be_invalid
+    end
+
+    it 'is invalid if a label is too long (64 chars)' do
+      record.hostname = "#{'a' * 64}.com"
+      expect(record).to be_invalid
+    end
+
+    it 'is invalid with leading/trailing whitespace' do
+      record.hostname = ' example.com '
+      expect(record).to be_invalid
+    end
+
+    it 'is invalid if blank' do
+      record.hostname = ''
+      expect(record).to be_invalid
+    end
+
+    it 'is invalid if nil' do
+      record.hostname = nil
+      expect(record).to be_invalid
+    end
+
+    it 'is invalid if a single dot' do
+      record.hostname = '.'
+      expect(record).to be_invalid
+    end
+
+    it 'is invalid with special characters' do
+      %w[; : * ^ ~ + ' ! # " % & / ( ) = ? $ \\].each do |char|
+        record.hostname = "#{char}example.com"
+        expect(record).to be_invalid
+      end
+    end
   end
 
-  describe 'FQDN validation' do
+  describe 'with fqdn: true' do
     before { test_class.validates :hostname, fqdn: true }
 
     it_behaves_like 'a valid hostname', 'example.com'
     it_behaves_like 'an invalid hostname', 'example'
   end
 
-  describe 'Wildcard validation' do
+  describe 'with wildcard: true' do
     before { test_class.validates :hostname, wildcard: true }
 
     it_behaves_like 'a valid hostname', '*.example.com'
