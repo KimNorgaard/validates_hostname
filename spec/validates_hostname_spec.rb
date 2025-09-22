@@ -106,4 +106,21 @@ RSpec.describe 'validates_hostname' do
     it_behaves_like 'a valid hostname', '12345.com'
     it_behaves_like 'an invalid hostname', '12345'
   end
+
+  describe 'I18n' do
+    before do
+      test_class.validates :hostname, hostname: true
+      I18n.locale = :es
+    end
+
+    after do
+      I18n.locale = :en
+    end
+
+    it 'returns the translated error message' do
+      record.hostname = '-example.com'
+      record.valid?
+      expect(record.errors[:hostname]).to include('comienza o termina con un guión')
+    end
+  end
 end

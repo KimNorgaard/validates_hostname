@@ -1,0 +1,12 @@
+de:
+  errors:
+    messages:
+      invalid_hostname_length: "muss zwischen 1 und 255 Zeichen lang sein"
+      invalid_label_length: "muss zwischen 1 und 63 Zeichen lang sein"
+      label_begins_or_ends_with_hyphen: "beginnt oder endet mit einem Bindestrich"
+      label_contains_invalid_characters: "enthält ungültige Zeichen (gültige Zeichen: [%{valid_chars}])"
+      hostname_label_is_numeric: "der nicht qualifizierte Hostname-Teil darf nicht nur aus numerischen Werten bestehen"
+      hostname_is_not_fqdn: "ist kein vollqualifizierter Domainname"
+      single_numeric_hostname_label: "darf nicht aus einem einzigen numerischen Label bestehen"
+      hostname_contains_consecutive_dots: "darf keine aufeinanderfolgenden Punkte enthalten"
+      hostname_ends_with_dot: "darf nicht mit einem Punkt enden"

@@ -16,85 +16,6 @@ ALLOWED_TLDS = Set.new(File.readlines(tlds_file_path)
 
 # Validates hostnames.
 class HostnameValidator < ActiveModel::EachValidator
-  LOCALES = {
-    en: {
-      errors: {
-        messages: {
-          invalid_hostname_length: "must be between 1 and 255 characters long",
-          invalid_label_length: "must be between 1 and 63 characters long",
-          label_begins_or_ends_with_hyphen: "begins or ends with a hyphen",
-          label_contains_invalid_characters: "contains invalid characters (valid characters: [%{valid_chars}])",
-          hostname_label_is_numeric: "unqualified hostname part cannot consist of numeric values only",
-          hostname_is_not_fqdn: "is not a fully qualified domain name",
-          single_numeric_hostname_label: "cannot consist of a single numeric label",
-          hostname_contains_consecutive_dots: "must not contain consecutive dots",
-          hostname_ends_with_dot: "must not end with a dot"
-        }
-      }
-    },
-    es: {
-      errors: {
-        messages: {
-          invalid_hostname_length: "debe tener entre 1 y 255 caracteres",
-          invalid_label_length: "debe tener entre 1 y 63 caracteres",
-          label_begins_or_ends_with_hyphen: "comienza o termina con un guión",
-          label_contains_invalid_characters: "contiene caracteres inválidos (caracteres válidos: [%{valid_chars}])",
-          hostname_label_is_numeric: "la parte del nombre de host no calificada no puede consistir solo en valores numéricos",
-          hostname_is_not_fqdn: "no es un nombre de dominio completo",
-          single_numeric_hostname_label: "no puede consistir en una sola etiqueta numérica",
-          hostname_contains_consecutive_dots: "no debe contener puntos consecutivos",
-          hostname_ends_with_dot: "no debe terminar con un punto"
-        }
-      }
-    },
-    de: {
-      errors: {
-        messages: {
-          invalid_hostname_length: "muss zwischen 1 und 255 Zeichen lang sein",
-          invalid_label_length: "muss zwischen 1 und 63 Zeichen lang sein",
-          label_begins_or_ends_with_hyphen: "beginnt oder endet mit einem Bindestrich",
-          label_contains_invalid_characters: "enthält ungültige Zeichen (gültige Zeichen: [%{valid_chars}])",
-          hostname_label_is_numeric: "der nicht qualifizierte Hostname-Teil darf nicht nur aus numerischen Werten bestehen",
-          hostname_is_not_fqdn: "ist kein vollqualifizierter Domainname",
-          single_numeric_hostname_label: "darf nicht aus einem einzigen numerischen Label bestehen",
-          hostname_contains_consecutive_dots: "darf keine aufeinanderfolgenden Punkte enthalten",
-          hostname_ends_with_dot: "darf nicht mit einem Punkt enden"
-        }
-      }
-    },
-    fr: {
-      errors: {
-        messages: {
-          invalid_hostname_length: "doit avoir entre 1 et 255 caractères",
-          invalid_label_length: "doit avoir entre 1 et 63 caractères",
-          label_begins_or_ends_with_hyphen: "commence ou se termine par un trait d'union",
-          label_contains_invalid_characters: "contient des caractères non valides (caractères valides: [%{valid_chars}])",
-          hostname_label_is_numeric: "la partie non qualifiée du nom d'hôte ne peut pas être constituée uniquement de valeurs numériques",
-          hostname_is_not_fqdn: "n'est pas un nom de domaine complet",
-          single_numeric_hostname_label: "ne peut pas consister en une seule étiquette numérique",
-          hostname_contains_consecutive_dots: "ne doit pas contenir de points consécutifs",
-          hostname_ends_with_dot: "ne doit pas se terminer par un point"
-        }
-      }
-    },
-    zh: {
-      errors: {
-        messages: {
-          invalid_hostname_length: "长度必须在 1 到 255 个字符之间",
-          invalid_label_length: "长度必须在 1 到 63 个字符之间",
-          label_begins_or_ends_with_hyphen: "以连字符开头或结尾",
-          label_contains_invalid_characters: "包含无效字符 (有效字符: [%{valid_chars}])",
-          hostname_label_is_numeric: "非限定主机名部分不能仅由数值组成",
-          hostname_is_not_fqdn: "不是完全限定的域名",
-          single_numeric_hostname_label: "不能由单个数字标签组成",
-          hostname_contains_consecutive_dots: "不得包含连续的点",
-          hostname_ends_with_dot: "不得以点结尾"
-        }
-      }
-    }
-  }.freeze
-
-  DEFAULT_ERROR_MESSAGES = LOCALES.fetch(I18n.locale, LOCALES[:en])[:errors][:messages].freeze
 
   # @param [Hash] options
   # @option options [Boolean] :allow_underscore (false) Allows underscores in hostname labels.
@@ -260,7 +181,6 @@ class HostnameValidator < ActiveModel::EachValidator
   # @param [Hash] interpolators The interpolators for the error message.
   def add_error(record, attr_name, message, interpolators = {})
     args = {
-      default: [options[:message], DEFAULT_ERROR_MESSAGES[message]].compact,
       scope: %i[errors messages]
     }.merge(interpolators)
     record.errors.add(attr_name, I18n.t(message, **args))
@@ -297,5 +217,15 @@ end
 class WildcardValidator < HostnameValidator
   def initialize(options)
     super({ allow_wildcard_hostname: true }.merge(options))
+  end
+end
+
+if defined?(Rails)
+  module ValidatesHostname
+    class Railtie < Rails::Railtie
+      initializer 'validates_hostname.i18n' do
+        I18n.load_path += Dir[File.expand_path("../config/locales/*.yml", __dir__)]
+      end
+    end
   end
 end
