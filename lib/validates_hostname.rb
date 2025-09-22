@@ -69,10 +69,6 @@ class HostnameValidator < ActiveModel::EachValidator
   # @param [Symbol] attribute The attribute to validate.
   # @param [String] value The value to validate.
   def validate_hostname_length(record, attribute, value)
-    if value.length == 1 && value != '.'
-      add_error(record, attribute, :invalid_hostname_length)
-    end
-
     # maximum hostname length: 255 characters
     unless value.length.between?(1, 255)
       add_error(record, attribute, :invalid_hostname_length)
