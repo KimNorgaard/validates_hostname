@@ -46,6 +46,7 @@ RSpec.describe 'validates_hostname' do
     it_behaves_like 'an invalid hostname', '*.example.com'
     it_behaves_like 'a valid hostname', 'a'
     it_behaves_like 'an invalid hostname', 'a' * 256
+    it_behaves_like 'an invalid hostname', ' example.com'
   end
 
   describe 'FQDN validation' do
