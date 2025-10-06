@@ -1,0 +1,35 @@
+plugins:
+  - rubocop-rake
+  - rubocop-rspec
+
+AllCops:
+  NewCops: enable
+  Exclude:
+    - "bin/*"
+    - "db/**/*"
+    - "config/**/*"
+    - "script/**/*"
+    - "vendor/**/*"
+    - "tmp/**/*"
+    - "node_modules/**/*"
+
+Metrics/MethodLength:
+  Exclude:
+    - "lib/validates_hostname.rb"
+
+Metrics/AbcSize:
+  Exclude:
+    - "lib/validates_hostname.rb"
+
+Metrics/CyclomaticComplexity:
+  Exclude:
+    - "lib/validates_hostname.rb"
+
+Metrics/PerceivedComplexity:
+  Exclude:
+    - "lib/validates_hostname.rb"
+
+Metrics/BlockLength:
+  Exclude:
+    - "spec/hostname_validator_spec.rb"
+    - "validates_hostname.gemspec"
