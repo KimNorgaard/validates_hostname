@@ -1,3 +1,4 @@
+- 2.0.3 [2025-10-16] - allow to run with activemodel 8
 - 2.0.0 [2025-09-22] - new major release - decouple from ActiveRecord and modernize for ActiveModel
 - 1.0.13 [2022-10-14] - allow for conditional validation, controlled with model method
 - 1.0.11 [2020-08-18] - fixes for ruby 2.7
