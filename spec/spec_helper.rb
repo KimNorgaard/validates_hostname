@@ -9,7 +9,7 @@ require 'active_model'
 require 'rspec/collection_matchers'
 require 'validates_hostname'
 
-I18n.load_path += Dir[File.expand_path('../config/locales/*.yaml', __dir__)]
+I18n.load_path += Dir[File.expand_path('../config/locales/*.yml', __dir__)]
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
