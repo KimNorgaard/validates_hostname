@@ -56,4 +56,4 @@ jobs:
           git tag "v${new_version}"
 
           # Push the commit and the tag, triggering the release workflow
-          git push origin main --follow-tags
+          git push origin main --tags
