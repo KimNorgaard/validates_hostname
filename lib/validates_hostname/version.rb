@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
 module ValidatesHostname
-  VERSION = '2.0.38'
+  VERSION = '2.0.39'
 end
