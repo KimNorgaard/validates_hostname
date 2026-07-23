@@ -118,7 +118,7 @@ class HostnameValidator < ActiveModel::EachValidator
 
       valid_chars = 'a-z0-9\-'
       valid_chars += '_' if options[:allow_underscore]
-      unless label.match?(/^[#{valid_chars}]+$/i)
+      unless label.match?(/\A[#{valid_chars}]+\z/i)
         add_error(record, attribute, :label_contains_invalid_characters, valid_chars: valid_chars.delete('\\'))
       end
     end
