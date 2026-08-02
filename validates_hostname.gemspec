@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-# stub: validates_hostname 2.0.0 ruby lib
+require_relative 'lib/validates_hostname/version'
 
 Gem::Specification.new do |s|
   s.name = 'validates_hostname'
-  s.version = '2.0.30'
+  s.version = ValidatesHostname::VERSION
   s.required_ruby_version = '>= 3.0.0'
 
   s.required_rubygems_version = Gem::Requirement.new('>= 0') if s.respond_to? :required_rubygems_version=
