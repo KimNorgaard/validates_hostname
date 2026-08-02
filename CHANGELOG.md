@@ -1,5 +1,6 @@
 # Changelog
 
+- 2.0.44 [2026-08-02] - fix validation, add cruby 4.0
 - 2.0.30 [2026-04-17] - fix i18n loading
 - 2.0.3 [2025-10-16] - allow to run with activemodel 8
 - 2.0.0 [2025-09-22] - new major release - decouple from ActiveRecord and modernize for ActiveModel
