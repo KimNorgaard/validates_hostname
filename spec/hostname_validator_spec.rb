@@ -112,6 +112,13 @@ RSpec.describe HostnameValidator do
         expect(record).to be_invalid
       end
     end
+
+    it 'is invalid with a newline character' do
+      ["foo.com\n", "foo.com\nserver_name evil", "\nfoo.com"].each do |value|
+        record.hostname = value
+        expect(record).to be_invalid
+      end
+    end
   end
 
   describe 'with fqdn: true' do
