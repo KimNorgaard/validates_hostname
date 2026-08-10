@@ -36,6 +36,10 @@ namespace :tlds do
     begin
       response = Net::HTTP.get(uri)
 
+      unless response.match?(/^COM$/i) && response.match?(/^ORG$/i) && response.match?(/^NET$/i)
+        raise "Downloaded TLD list appears invalid (missing COM, ORG, or NET)."
+      end
+
       File.write('data/tlds.txt', response)
 
       puts 'Successfully updated data/tlds.txt.'
