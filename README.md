@@ -93,6 +93,18 @@ end
 - `allow_wildcard_hostname`: Permits a wildcard character (`*`) as the first label of the hostname (e.g., `*.example.com`). (default: `false`)
 - `allow_root_label`: Permits a trailing dot (root label) in the hostname (e.g., `example.com.`). (default: `false`)
 
+## TLD Updates
+
+The default list of valid TLDs (stored in `data/tlds.txt`) is automatically updated from IANA on a quarterly basis via a GitHub Action. If a new TLD has been released and you need to support it immediately before the next quarterly gem update, you can override the valid TLD list by passing an updated array to the `valid_tlds` option:
+
+```ruby
+# Example of appending a new TLD to the default list
+validates :name, hostname: { 
+  require_valid_tld: true, 
+  valid_tlds: ValidatesHostname::TLDs + ['newtld'] 
+}
+```
+
 ## Examples
 
 Without options:
