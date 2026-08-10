@@ -10,7 +10,7 @@ jobs:
     name: Release to RubyGems.org
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
 
     steps:
       - name: Checkout code
@@ -35,3 +35,8 @@ jobs:
 
       - name: Push gem to RubyGems.org
         run: gem push *.gem
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          generate_release_notes: true
